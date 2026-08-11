@@ -1,39 +1,28 @@
-```html {% extends "base.html" %} {% block title %} Library Books {% endblock %} {% block content %}
+{% extends "base.html" %} {% block title %} Issued Books {% endblock %} {% block content %}
 
 <div class="d-flex justify-content-between align-items-center mb-3">
-    <h2>Library Books</h2>
-
-    <button class="btn btn-primary">Add Book</button>
+    <h2>Issued Books</h2>
 </div>
-
-<!-- =========================
-     Books Table
-========================== -->
 
 <div class="table-responsive">
     <table
-        id="booksTable"
+        id="issuedBooksTable"
         class="library-table table table-bordered table-striped table-hover"
-        data-empty-message="No books available."
+        data-empty-message="No books are currently issued."
     >
         <thead class="table-dark">
             <tr>
                 <th>Accession No.</th>
-
                 <th>Serial No.</th>
-
                 <th>Book Name</th>
-
                 <th>Author</th>
-
                 <th>Category</th>
-
                 <th>Status</th>
             </tr>
         </thead>
 
         <tbody>
-            {% if books %} {% for book in books %}
+            {% for book in books %}
 
             <tr>
                 <td>{{ book.accession_no }}</td>
@@ -47,27 +36,13 @@
                 <td>{{ book.category }}</td>
 
                 <td>
-                    {% if book.status == "Available" %}
-
-                    <span class="badge bg-success"> Available </span>
-
-                    {% else %}
-
-                    <span class="badge bg-danger"> Issued </span>
-
-                    {% endif %}
+                    <span class="badge bg-danger"> {{ book.status }} </span>
                 </td>
             </tr>
 
-            {% endfor %} {% else %}
-
-            <tr>
-                <td colspan="6" class="text-center">No books available.</td>
-            </tr>
-
-            {% endif %}
+            {% endfor %}
         </tbody>
     </table>
 </div>
 
-{% endblock %} ```
+{% endblock %}

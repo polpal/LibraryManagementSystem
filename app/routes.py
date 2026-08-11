@@ -1,23 +1,36 @@
 from flask import Blueprint, render_template
+from .models import Book
 
 main = Blueprint("main", __name__)
 
 
 @main.route("/")
-def home():
-    return render_template("index.html")
+def index():
+
+    books = Book.query.all()
+
+    return render_template(
+        "index.html",
+        books=books
+    )
 
 
 @main.route("/books")
 def books():
-    return render_template("books.html")
 
+    books = Book.query.all()
 
-@main.route("/members")
-def members():
-    return render_template("members.html")
+    return render_template(
+        "books.html",
+        books=books
+    )
 
+@main.route("/issued-books")
+def issued_books():
 
-@main.route("/about")
-def about():
-    return render_template("about.html")
+    books = Book.query.filter_by(status="Issued").all()
+
+    return render_template(
+        "issued_books.html",
+        books=books
+    )
