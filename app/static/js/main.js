@@ -1,30 +1,29 @@
 console.log("Library Management System JavaScript loaded.");
 
 $(document).ready(function () {
-
-    // Books DataTable
-    if ($('#booksTable').length) {
-
-        $('#booksTable').DataTable({
+    if ($("#booksTable").length) {
+        $("#booksTable").DataTable({
             pageLength: 10,
-            language: {
-                emptyTable: "No books are currently available."
-            }
-        });
+            lengthMenu: [10, 25, 50, 100],
 
+            order: [[2, "asc"]],
+
+            language: {
+                emptyTable: "No books are currently available.",
+                zeroRecords: "No matching books found.",
+            },
+        });
     }
 
-
-    // Issued Books DataTable
-    if ($('#issuedBooksTable').length) {
-
-        $('#issuedBooksTable').DataTable({
+    if ($("#issuedBooksTable").length) {
+        $("#issuedBooksTable").DataTable({
             pageLength: 10,
+            lengthMenu: [10, 25, 50, 100],
+
             language: {
-                emptyTable: "No books are currently issued."
-            }
+                emptyTable: "No books are currently issued.",
+                zeroRecords: "No matching issued books found.",
+            },
         });
-
     }
-
 });
