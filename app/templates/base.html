@@ -45,8 +45,8 @@
                 <div class="collapse navbar-collapse" id="mainNavbar">
                     <ul class="navbar-nav ms-auto">
                         {% set nav_items = [ ('Home', 'main.index'), ('Books', 'main.books'),
-                        ('Issued Books', 'main.issued_books') ] %} {% for name, endpoint in
-                        nav_items %}
+                        ('Issued Books', 'main.issued_books'),('Issue Books', 'main.issue_book')] %}
+                        {% for name, endpoint in nav_items %}
 
                         <li class="nav-item">
                             <a

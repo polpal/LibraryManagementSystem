@@ -12,34 +12,47 @@
     >
         <thead class="table-dark">
             <tr>
+                <th>Transaction No.</th>
                 <th>Accession No.</th>
-                <th>Serial No.</th>
                 <th>Book Name</th>
-                <th>Author</th>
-                <th>Category</th>
-                <th>Status</th>
+                <th>Member No.</th>
+                <th>Member Name</th>
+                <th>Issue Date</th>
+                <th>Due Date</th>
+                <th>Action</th>
             </tr>
         </thead>
 
         <tbody>
-            {% for book in books %}
-
+            {% for transaction in transactions %}
             <tr>
-                <td>{{ book.accession_no }}</td>
+                <td>{{ transaction.transaction_no }}</td>
 
-                <td>{{ book.serial_no }}</td>
+                <td>{{ transaction.book.accession_no }}</td>
 
-                <td>{{ book.book_name }}</td>
+                <td>{{ transaction.book.book_name }}</td>
 
-                <td>{{ book.author }}</td>
+                <td>{{ transaction.member.member_no }}</td>
 
-                <td>{{ book.category }}</td>
+                <td>{{ transaction.member.name }}</td>
+
+                <td>{{ transaction.issue_date }}</td>
+
+                <td>{{ transaction.due_date }}</td>
 
                 <td>
-                    <span class="badge bg-danger"> {{ book.status }} </span>
+                    <a
+                        href="{{ url_for(
+                    'main.return_book_route',
+                    transaction_no=transaction.transaction_no
+                ) }}"
+                        class="btn btn-sm btn-danger"
+                        onclick="return confirm('Are you sure you want to return this book?');"
+                    >
+                        Return
+                    </a>
                 </td>
             </tr>
-
             {% endfor %}
         </tbody>
     </table>

@@ -1,6 +1,11 @@
-from flask import Blueprint, render_template
-from .models import Book
+from flask import Blueprint, render_template, request, redirect, url_for
+from datetime import datetime, date
 
+from .models import Book, Member, Transaction
+from .services.transaction_service import (
+    issue_book_to_member,
+    return_book
+)
 main = Blueprint("main", __name__)
 
 
@@ -28,9 +33,66 @@ def books():
 @main.route("/issued-books")
 def issued_books():
 
-    books = Book.query.filter_by(status="Issued").all()
+    transactions = Transaction.query.filter_by(
+        return_date=None
+    ).all()
 
     return render_template(
         "issued_books.html",
-        books=books
+        transactions=transactions
     )
+@main.route("/issue", methods=["GET", "POST"])
+def issue_book():
+
+    if request.method == "GET":
+
+        books = Book.query.filter_by(status="Available").all()
+        members = Member.query.filter_by(status="Active").all()
+        today = date.today()
+
+        return render_template(
+            "issue_book.html",
+            books=books,
+            members=members,
+            today=today
+        )
+    if request.method == "POST":
+
+        member_id = request.form.get("member_id")
+        book_id = request.form.get("book_id")
+        due_date = request.form.get("due_date")
+
+    if not member_id:
+        return "Please select a member.", 400
+
+    if not book_id:
+        return "Please select a book.", 400
+
+    if not due_date:
+        return "Please select a due date.", 400
+
+    due_date = datetime.strptime(
+        due_date,
+        "%Y-%m-%d"
+    ).date()
+
+    success, message = issue_book_to_member(
+        member_id,
+        book_id,
+        due_date
+    )
+
+    if not success:
+        return message, 400
+
+    return redirect(url_for("main.issued_books"))
+
+@main.route("/return/<int:transaction_no>")
+def return_book_route(transaction_no):
+
+    success, message = return_book(transaction_no)
+
+    if not success:
+        return message, 400
+
+    return redirect(url_for("main.issued_books"))
