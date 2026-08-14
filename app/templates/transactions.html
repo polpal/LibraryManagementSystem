@@ -1,0 +1,83 @@
+{% extends "base.html" %} {% block title %} Transaction History {% endblock %} {% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Transaction History</h2>
+</div>
+
+<div class="table-responsive">
+    <table
+        id="transactionsTable"
+        class="library-table table table-bordered table-striped table-hover"
+        data-empty-message="No transactions found."
+    >
+        <thead class="table-dark">
+            <tr>
+                <th>Transaction No.</th>
+                <th>Accession No.</th>
+                <th>Book Name</th>
+                <th>Member No.</th>
+                <th>Member Name</th>
+                <th>Issue Date</th>
+                <th>Due Date</th>
+                <th>Return Date</th>
+                <th>Type</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for transaction in transactions %}
+
+            <tr>
+                <td>{{ transaction.transaction_no }}</td>
+
+                <td>{{ transaction.book.accession_no }}</td>
+
+                <td>{{ transaction.book.book_name }}</td>
+
+                <td>{{ transaction.member.member_no }}</td>
+
+                <td>{{ transaction.member.name }}</td>
+
+                <td>{{ transaction.issue_date }}</td>
+
+                <td>{{ transaction.due_date }}</td>
+
+                <td>
+                    {% if transaction.return_date %} {{ transaction.return_date }} {% else %} - {%
+                    endif %}
+                </td>
+
+                <td>{{ transaction.transaction_type }}</td>
+
+                <td>
+                    {% if transaction.return_date is none %}
+
+                    <span class="text-muted"> Active </span>
+
+                    {% elif transaction.member_id in active_member_ids %}
+
+                    <span class="text-muted"> Not Eligible </span>
+
+                    {% else %}
+
+                    <a
+                        href="{{ url_for(
+            'main.reissue_book_route',
+            transaction_no=transaction.transaction_no
+        ) }}"
+                        class="btn btn-sm btn-primary"
+                    >
+                        Reissue
+                    </a>
+
+                    {% endif %}
+                </td>
+            </tr>
+
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

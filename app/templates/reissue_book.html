@@ -1,0 +1,62 @@
+{% extends "base.html" %} {% block title %} Reissue Book {% endblock %} {% block content %}
+
+<div class="container">
+    <h2 class="mb-4">Reissue Book</h2>
+
+    <div class="card">
+        <div class="card-body">
+            <div class="mb-3">
+                <strong>Member:</strong>
+                {{ transaction.member.name }}
+            </div>
+
+            <div class="mb-3">
+                <strong>Member No:</strong>
+                {{ transaction.member.member_no }}
+            </div>
+
+            <div class="mb-3">
+                <strong>Book:</strong>
+                {{ transaction.book.book_name }}
+            </div>
+
+            <div class="mb-3">
+                <strong>Accession No:</strong>
+                {{ transaction.book.accession_no }}
+            </div>
+
+            <div class="mb-3">
+                <strong>Previous Issue Date:</strong>
+                {{ transaction.issue_date.strftime("%d-%m-%Y") }}
+            </div>
+
+            <div class="mb-3">
+                <strong>Previous Return Date:</strong>
+                {{ transaction.return_date.strftime("%d-%m-%Y") }}
+            </div>
+
+            <hr />
+
+            <form method="POST">
+                <div class="mb-3">
+                    <label for="due_date" class="form-label"> New Due Date </label>
+
+                    <input
+                        type="date"
+                        id="due_date"
+                        name="due_date"
+                        class="form-control"
+                        min="{{ today.strftime('%Y-%m-%d') }}"
+                        required
+                    />
+                </div>
+
+                <button type="submit" class="btn btn-primary">Reissue Book</button>
+
+                <a href="{{ url_for('main.issued_books') }}" class="btn btn-secondary"> Cancel </a>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
