@@ -10,9 +10,15 @@ def create_app():
 
     db.init_app(app)
 
-    from .models import Book, Member
+    from .routes.main_routes import main_bp
+    from .routes.member_routes import member_bp
+    from .routes.book_routes import book_bp
+    from .routes.transaction_routes import transaction_bp
 
-    from .routes import main
-    app.register_blueprint(main)
+    app.register_blueprint(main_bp)
+    app.register_blueprint(member_bp)
+    app.register_blueprint(book_bp)
+    app.register_blueprint(transaction_bp)
+    
 
     return app

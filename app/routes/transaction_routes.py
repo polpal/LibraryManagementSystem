@@ -1,37 +1,18 @@
 from flask import Blueprint, render_template, request, redirect, url_for
 from datetime import datetime, date
 
-from .models import Book, Member, Transaction
-from .services.transaction_service import (
+from ..models import Book, Member, Transaction
+from ..services.transaction_service import (
     issue_book_to_member,
     return_book,
     reissue_book
 )
-main = Blueprint("main", __name__)
 
 
-@main.route("/")
-def index():
-
-    books = Book.query.all()
-
-    return render_template(
-        "index.html",
-        books=books
-    )
+transaction_bp = Blueprint("transaction", __name__)
 
 
-@main.route("/books")
-def books():
-
-    books = Book.query.all()
-
-    return render_template(
-        "books.html",
-        books=books
-    )
-
-@main.route("/issued-books")
+@transaction_bp.route("/issued-books")
 def issued_books():
 
     transactions = Transaction.query.filter_by(
@@ -43,7 +24,8 @@ def issued_books():
         transactions=transactions
     )
 
-@main.route("/transactions")
+
+@transaction_bp.route("/transactions")
 def transactions():
 
     transactions = Transaction.query.order_by(
@@ -62,13 +44,20 @@ def transactions():
         active_member_ids=active_member_ids
     )
 
-@main.route("/issue", methods=["GET", "POST"])
+
+@transaction_bp.route("/issue", methods=["GET", "POST"])
 def issue_book():
 
     if request.method == "GET":
 
-        books = Book.query.filter_by(status="Available").all()
-        members = Member.query.filter_by(status="Active").all()
+        books = Book.query.filter_by(
+            status="Available"
+        ).all()
+
+        members = Member.query.filter_by(
+            status="Active"
+        ).all()
+
         today = date.today()
 
         return render_template(
@@ -77,11 +66,10 @@ def issue_book():
             members=members,
             today=today
         )
-    if request.method == "POST":
 
-        member_id = request.form.get("member_id")
-        book_id = request.form.get("book_id")
-        due_date = request.form.get("due_date")
+    member_id = request.form.get("member_id")
+    book_id = request.form.get("book_id")
+    due_date = request.form.get("due_date")
 
     if not member_id:
         return "Please select a member.", 400
@@ -106,19 +94,30 @@ def issue_book():
     if not success:
         return message, 400
 
-    return redirect(url_for("main.issued_books"))
+    return redirect(
+        url_for("transaction.issued_books")
+    )
 
-@main.route("/return/<int:transaction_no>")
+
+@transaction_bp.route("/return/<int:transaction_no>")
 def return_book_route(transaction_no):
 
-    success, message = return_book(transaction_no)
+    success, message = return_book(
+        transaction_no
+    )
 
     if not success:
         return message, 400
 
-    return redirect(url_for("main.issued_books"))
+    return redirect(
+        url_for("transaction.issued_books")
+    )
 
-@main.route("/reissue/<int:transaction_no>", methods=["GET", "POST"])
+
+@transaction_bp.route(
+    "/reissue/<int:transaction_no>",
+    methods=["GET", "POST"]
+)
 def reissue_book_route(transaction_no):
 
     transaction = Transaction.query.filter_by(
@@ -159,41 +158,6 @@ def reissue_book_route(transaction_no):
     if not success:
         return message, 400
 
-    return redirect(url_for("main.issued_books"))
-@main.route("/members/add", methods=["GET", "POST"])
-def add_member():
-
-    if request.method == "POST":
-
-        member_no = request.form["member_no"].strip()
-        name = request.form["name"].strip()
-        designation = request.form["designation"].strip()
-        department = request.form["department"].strip()
-        address = request.form["address"].strip()
-        phone = request.form["phone"].strip()
-        email = request.form["email"].strip()
-
-        # Check duplicate member number
-        existing_member = Member.query.filter_by(
-            member_no=member_no
-        ).first()
-
-        if existing_member:
-            return "Member number already exists."
-
-        member = Member(
-            member_no=member_no,
-            name=name,
-            designation=designation,
-            department=department,
-            address=address,
-            phone=phone,
-            email=email
-        )
-
-        db.session.add(member)
-        db.session.commit()
-
-        return redirect(url_for("main.members"))
-
-    return render_template("add_member.html")
+    return redirect(
+        url_for("transaction.issued_books")
+    )
