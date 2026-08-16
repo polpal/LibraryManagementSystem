@@ -5,5 +5,57 @@ Members
 {% endblock %}
 
 {% block content %}
-<h2>Books Page</h2>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Members</h2>
+
+    <a
+        href="{{ url_for('member.add_member') }}"
+        class="btn btn-primary"
+    >
+        Add Member
+    </a>
+</div>
+
+<div class="table-responsive">
+
+    <table
+        id="membersTable"
+        class="library-table table table-bordered table-striped table-hover"
+    >
+
+        <thead>
+            <tr>
+                <th>Member No.</th>
+                <th>Name</th>
+                <th>Designation</th>
+                <th>Department</th>
+                <th>Phone</th>
+                <th>Email</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            {% for member in members %}
+
+            <tr>
+                <td>{{ member.member_no }}</td>
+                <td>{{ member.name }}</td>
+                <td>{{ member.designation }}</td>
+                <td>{{ member.department }}</td>
+                <td>{{ member.phone }}</td>
+                <td>{{ member.email }}</td>
+                <td>{{ member.status }}</td>
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
 {% endblock %}
