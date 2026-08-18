@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for
 
 from ..models import db, Member
+from ..forms.member_form import MemberForm
 
 
 member_bp = Blueprint("member", __name__)
@@ -20,47 +21,45 @@ def members():
 @member_bp.route("/members/add", methods=["GET", "POST"])
 def add_member():
 
-    # Find the highest existing Member No.
-    last_member = (
+    # Find all existing MEM member numbers
+    members = (
         Member.query
         .filter(Member.member_no.like("MEM%"))
-        .order_by(Member.id.desc())
-        .first()
+        .all()
     )
 
-    if last_member:
+    numbers = []
+
+    for member in members:
         try:
-            last_number = int(last_member.member_no[3:])
-            next_number = last_number + 1
+            number = int(member.member_no[3:])
+            numbers.append(number)
         except (ValueError, TypeError):
-            next_number = 1
+            pass
+
+    if numbers:
+        next_number = max(numbers) + 1
     else:
         next_number = 1
 
     next_member_no = f"MEM{next_number:03d}"
 
-    if request.method == "POST":
+    # Create Flask-WTF form
+    form = MemberForm()
 
-        name = request.form.get("name", "").strip()
-        designation = request.form.get("designation", "").strip()
-        department = request.form.get("department", "").strip()
-        address = request.form.get("address", "").strip()
-        phone = request.form.get("phone", "").strip()
-        email = request.form.get("email", "").strip()
+    # Server-generated Member No.
+    form.member_no.data = next_member_no
 
-        # Required field validation
-        if not name:
-            return "Member name is required.", 400
+    if form.validate_on_submit():
 
-        # Create member using the server-generated Member No.
         member = Member(
             member_no=next_member_no,
-            name=name,
-            designation=designation,
-            department=department,
-            address=address,
-            phone=phone,
-            email=email
+            name=form.name.data.strip(),
+            designation=form.designation.data.strip(),
+            department=form.department.data.strip(),
+            address=form.address.data.strip(),
+            phone=form.phone.data.strip(),
+            email=form.email.data.strip()
         )
 
         db.session.add(member)
@@ -70,5 +69,6 @@ def add_member():
 
     return render_template(
         "add_member.html",
+        form=form,
         next_member_no=next_member_no
     )

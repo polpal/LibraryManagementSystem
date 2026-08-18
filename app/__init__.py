@@ -1,7 +1,8 @@
 from flask import Flask
 from config import Config
 from .models import db
-
+from flask_wtf import CSRFProtect
+csrf = CSRFProtect()
 
 def create_app():
 
@@ -9,6 +10,7 @@ def create_app():
     app.config.from_object(Config)
 
     db.init_app(app)
+    csrf.init_app(app)
 
     from .routes.main_routes import main_bp
     from .routes.member_routes import member_bp
