@@ -1,6 +1,6 @@
-from flask import Blueprint, render_template, request, redirect, url_for
+from flask import Blueprint, render_template, redirect, url_for,flash
 
-from ..models import db, Member
+from ..models import db, Member,Transaction
 from ..forms.member_form import MemberForm
 
 
@@ -59,12 +59,14 @@ def add_member():
             department=form.department.data.strip(),
             address=form.address.data.strip(),
             phone=form.phone.data.strip(),
-            email=form.email.data.strip()
+            email=form.email.data.strip(),
+            status=form.status.data
         )
 
         db.session.add(member)
         db.session.commit()
 
+        flash("Member created successfully.", "success")
         return redirect(url_for("member.members"))
 
     return render_template(
@@ -72,3 +74,58 @@ def add_member():
         form=form,
         next_member_no=next_member_no
     )
+    
+@member_bp.route("/members/edit/<int:member_id>", methods=["GET", "POST"])
+def edit_member(member_id):
+
+    member = Member.query.get_or_404(member_id)
+
+    form = MemberForm(member_id=member.id, obj=member)
+
+    if form.validate_on_submit():
+
+        member.name = form.name.data.strip()
+        member.designation = form.designation.data.strip()
+        member.department = form.department.data.strip()
+        member.address = form.address.data.strip()
+        member.phone = form.phone.data.strip()
+        member.email = form.email.data.strip()
+        member.status = form.status.data
+
+        db.session.commit()
+
+        flash("Member updated successfully.", "success")
+
+        return redirect(url_for("member.members"))
+
+    return render_template(
+        "edit_member.html",
+        form=form,
+        member=member
+    )
+    
+@member_bp.route("/members/delete/<int:member_id>", methods=["POST"])
+def delete_member(member_id):
+
+    member = Member.query.get_or_404(member_id)
+
+    transaction = Transaction.query.filter_by(
+        member_id=member.id
+    ).first()
+
+    if transaction:
+        flash(
+            "This member has transaction history and cannot be deleted.",
+            "danger"
+        )
+        return redirect(url_for("member.members"))
+
+    db.session.delete(member)
+    db.session.commit()
+
+    flash(
+        "Member deleted successfully.",
+        "success"
+    )
+
+    return redirect(url_for("member.members"))

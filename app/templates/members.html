@@ -1,29 +1,13 @@
-{% extends "base.html" %}
-
-{% block title %}
-Members
-{% endblock %}
-
-{% block content %}
+{% extends "base.html" %} {% block title %} Members {% endblock %} {% block content %}
 
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h2>Members</h2>
 
-    <a
-        href="{{ url_for('member.add_member') }}"
-        class="btn btn-primary"
-    >
-        Add Member
-    </a>
+    <a href="{{ url_for('member.add_member') }}" class="btn btn-primary"> Add Member </a>
 </div>
 
 <div class="table-responsive">
-
-    <table
-        id="membersTable"
-        class="library-table table table-bordered table-striped table-hover"
-    >
-
+    <table id="membersTable" class="library-table table table-bordered table-striped table-hover">
         <thead>
             <tr>
                 <th>Member No.</th>
@@ -33,11 +17,11 @@ Members
                 <th>Phone</th>
                 <th>Email</th>
                 <th>Status</th>
+                <th>Action</th>
             </tr>
         </thead>
 
         <tbody>
-
             {% for member in members %}
 
             <tr>
@@ -48,14 +32,35 @@ Members
                 <td>{{ member.phone }}</td>
                 <td>{{ member.email }}</td>
                 <td>{{ member.status }}</td>
+                <td>
+                    <div class="d-flex gap-2">
+                        <a
+                            href="{{ url_for('member.edit_member', member_id=member.id) }}"
+                            class="btn btn-sm btn-primary"
+                        >
+                            Edit
+                        </a>
+
+                        <button
+                            type="button"
+                            class="btn btn-sm btn-danger confirm-modal-trigger"
+                            data-modal-title="Delete Member"
+                            data-modal-message="Are you sure you want to delete this member?"
+                            data-modal-action="{{ url_for('member.delete_member', member_id=member.id) }}"
+                            data-modal-confirm="Delete"
+                        >
+                            Delete
+                        </button>
+                    </div>
+                </td>
             </tr>
 
             {% endfor %}
-
         </tbody>
-
     </table>
-
 </div>
 
+<!-- Reusable confirmation modal -->
+{% include "includes/confirm_modal.html" %} {% endblock %} {% block scripts %}
+<script src="{{ url_for('static', filename='js/confirm_modal.js') }}"></script>
 {% endblock %}

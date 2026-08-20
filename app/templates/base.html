@@ -68,7 +68,23 @@
          Main Content
     ========================== -->
 
-        <main class="container mt-4">{% block content %} {% endblock %}</main>
+        <main class="container mt-4">
+            {% with messages = get_flashed_messages(with_categories=true) %} {% if messages %} {%
+            for category, message in messages %}
+            <div
+                class="alert alert-{{ category }} alert-dismissible fade show flash-message"
+                role="alert"
+            >
+                {{ message }}
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                    aria-label="Close"
+                ></button>
+            </div>
+            {% endfor %} {% endif %} {% endwith %} {% block content %} {% endblock %}
+        </main>
 
         <!-- =========================
          Footer
@@ -86,6 +102,11 @@
 
         <!-- Our JavaScript -->
         <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+        <!-- Our Flash Message JS  -->
+        <script src="{{ url_for('static', filename='js/flash.js') }}"></script>
+        <!-- Our Bootstrap  -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+        {% block scripts %} {% endblock %}
     </body>
 </html>
 ```

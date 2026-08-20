@@ -32,11 +32,11 @@ class Member(db.Model):
     )
 
     phone = db.Column(
-        db.String(20)
+        db.String(20), unique=True, nullable=False
     )
 
     email = db.Column(
-        db.String(150)
+        db.String(120), unique=True, nullable=False
     )
 
     status = db.Column(
