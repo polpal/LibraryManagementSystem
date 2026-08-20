@@ -8,10 +8,4 @@ main_bp = Blueprint("main", __name__)
 
 @main_bp.route("/")
 def index():
-
-    books = Book.query.all()
-
-    return render_template(
-        "index.html",
-        books=books
-    )
+ return render_template("index.html")

@@ -1,7 +1,8 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, request, redirect, url_for, flash
 
 from ..models import Book
-
+from .. import db
+from ..forms.book_form import BookForm
 
 book_bp = Blueprint("book", __name__)
 
@@ -14,4 +15,74 @@ def books():
     return render_template(
         "books.html",
         books=books
+    )
+    
+ 
+@book_bp.route("/add-book", methods=["GET", "POST"])
+def add_book():
+
+    if request.method == "POST":
+
+        accession_no = request.form.get("accession_no")
+        book_name = request.form.get("book_name")
+        author = request.form.get("author")
+        category = request.form.get("category")
+
+        existing_book = Book.query.filter_by(
+            accession_no=accession_no
+        ).first()
+
+        if existing_book:
+            flash("Accession Number already exists.", "danger")
+            return redirect(url_for("book.add_book"))
+
+        new_book = Book(
+            accession_no=accession_no,
+            book_name=book_name,
+            author=author,
+            category=category,
+            status="Available"
+        )
+
+        db.session.add(new_book)
+        db.session.commit()
+
+        flash("Book added successfully.", "success")
+
+        return redirect(url_for("book.books"))
+
+    return render_template("add_book.html")   
+
+@book_bp.route("/books/edit/<int:book_id>", methods=["GET", "POST"])
+def edit_book(book_id):
+
+    book = Book.query.get_or_404(book_id)
+
+    form = BookForm(
+        book_id=book.id,
+        obj=book
+    )
+
+    if form.validate_on_submit():
+
+        book.accession_no = form.accession_no.data.strip()
+        book.book_name = form.book_name.data.strip()
+        book.author = form.author.data.strip()
+        book.category = form.category.data.strip()
+
+        db.session.commit()
+
+        flash(
+            "Book updated successfully.",
+            "success"
+        )
+
+        return redirect(
+            url_for("book.books")
+        )
+
+    return render_template(
+        "edit_book.html",
+        form=form,
+        book=book
     )
