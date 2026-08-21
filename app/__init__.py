@@ -2,12 +2,17 @@ from flask import Flask
 from config import Config
 from .models import db
 from flask_wtf import CSRFProtect
+from app.utils.logger import logger
 csrf = CSRFProtect()
+
 
 def create_app():
 
     app = Flask(__name__)
     app.config.from_object(Config)
+    logger.info(
+        "Application started"
+    )
 
     db.init_app(app)
     csrf.init_app(app)
