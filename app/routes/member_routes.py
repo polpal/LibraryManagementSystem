@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, redirect, url_for,flash
 
 from ..models import db, Member,Transaction
 from ..forms.member_form import MemberForm
+from app.utils.logger import logger
 
 
 member_bp = Blueprint("member", __name__)
@@ -62,11 +63,21 @@ def add_member():
             email=form.email.data.strip(),
             status=form.status.data
         )
+        try:
+            db.session.add(member)
+            db.session.commit()
+            logger.info(
+                 f"Member created. "
+                 f"member_no={member.member_no}, "
+                 f"name={member.name}"
+                )
+            flash("Member created successfully.", "success")
+        except Exception:
+            db.session.rollback()
 
-        db.session.add(member)
-        db.session.commit()
-
-        flash("Member created successfully.", "success")
+            logger.exception(
+                "Database error during add_member"
+            )
         return redirect(url_for("member.members"))
 
     return render_template(

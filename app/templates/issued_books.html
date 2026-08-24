@@ -43,14 +43,24 @@
                 <td>
                     <a
                         href="{{ url_for(
-                    'transaction.return_book_route',
-                    transaction_no=transaction.transaction_no
-                ) }}"
+                                'transaction.reissue_book_route',
+                                transaction_no=transaction.transaction_no
+                                 ) }}"
+                        class="btn btn-sm btn-warning"
+                     >
+                        Reissue
+                    </a>
+
+                    <a
+                         href="{{ url_for(
+                                 'transaction.return_book_route',
+                                    transaction_no=transaction.transaction_no
+                                    ) }}"
                         class="btn btn-sm btn-danger"
                         onclick="return confirm('Are you sure you want to return this book?');"
                     >
                         Return
-                    </a>
+                     </a>
                 </td>
             </tr>
             {% endfor %}

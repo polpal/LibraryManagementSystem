@@ -1,5 +1,6 @@
-from flask import Blueprint, render_template, request, redirect, url_for
+from flask import Blueprint, render_template, request, redirect, url_for,flash
 from datetime import datetime, date
+from app.forms import IssueBookForm
 
 from ..models import Book, Member, Transaction
 from ..services.transaction_service import (
@@ -48,54 +49,53 @@ def transactions():
 @transaction_bp.route("/issue", methods=["GET", "POST"])
 def issue_book():
 
-    if request.method == "GET":
+    form = IssueBookForm()
 
-        books = Book.query.filter_by(
-            status="Available"
-        ).all()
+    books = Book.query.filter_by(
+        status="Available"
+    ).all()
 
-        members = Member.query.filter_by(
-            status="Active"
-        ).all()
+    members = Member.query.filter_by(
+        status="Active"
+    ).all()
 
-        today = date.today()
+    form.member_id.choices = [
+        (
+            member.id,
+            f"{member.member_no} - {member.name}"
+        )
+        for member in members
+    ]
 
-        return render_template(
-            "issue_book.html",
-            books=books,
-            members=members,
-            today=today
+    form.book_id.choices = [
+        (
+            book.id,
+            f"{book.accession_no} - {book.book_name}"
+        )
+        for book in books
+    ]
+
+    if form.validate_on_submit():
+
+        success, message = issue_book_to_member(
+            form.member_id.data,
+            form.book_id.data,
+            form.due_date.data
         )
 
-    member_id = request.form.get("member_id")
-    book_id = request.form.get("book_id")
-    due_date = request.form.get("due_date")
+        if success:
+            flash(message, "success")
 
-    if not member_id:
-        return "Please select a member.", 400
+            return redirect(
+                url_for("transaction.issued_books")
+            )
 
-    if not book_id:
-        return "Please select a book.", 400
+        flash(message, "danger")
 
-    if not due_date:
-        return "Please select a due date.", 400
-
-    due_date = datetime.strptime(
-        due_date,
-        "%Y-%m-%d"
-    ).date()
-
-    success, message = issue_book_to_member(
-        member_id,
-        book_id,
-        due_date
-    )
-
-    if not success:
-        return message, 400
-
-    return redirect(
-        url_for("transaction.issued_books")
+    return render_template(
+        "issue_book.html",
+        form=form,
+        today=date.today()
     )
 
 

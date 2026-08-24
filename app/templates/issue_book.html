@@ -4,30 +4,15 @@
     <h2>Issue Book</h2>
 
     <form method="POST">
+         {{ form.hidden_tag() }}
         <div class="mb-3">
-            <label for="member_id" class="form-label"> Member </label>
-
-            <select class="form-select" id="member_id" name="member_id" required>
-                <option value="">Select Member</option>
-
-                {% for member in members %}
-                <option value="{{ member.id }}">{{ member.member_no }} - {{ member.name }}</option>
-                {% endfor %}
-            </select>
+            {{ form.member_id.label(class="form-label") }}
+            {{ form.member_id(class="form-select") }}
         </div>
 
         <div class="mb-3">
-            <label for="book_id" class="form-label"> Book </label>
-
-            <select class="form-select" id="book_id" name="book_id" required>
-                <option value="">Select Book</option>
-
-                {% for book in books %}
-                <option value="{{ book.id }}">
-                    {{ book.accession_no }} - {{ book.book_name }}
-                </option>
-                {% endfor %}
-            </select>
+            {{ form.book_id.label(class="form-label") }}
+            {{ form.book_id(class="form-select") }}
         </div>
         <div class="mb-3">
             <label for="issue_date" class="form-label"> Issue Date </label>
@@ -43,12 +28,11 @@
         </div>
 
         <div class="mb-3">
-            <label for="due_date" class="form-label"> Due Date </label>
-
-            <input type="date" class="form-control" id="due_date" name="due_date" required />
+            {{ form.due_date.label(class="form-label") }}
+            {{ form.due_date(class="form-control") }}
         </div>
 
-        <button type="submit" class="btn btn-primary">Issue Book</button>
+        {{ form.submit(class="btn btn-primary") }}
     </form>
 </div>
 
