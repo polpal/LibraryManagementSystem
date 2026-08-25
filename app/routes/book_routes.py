@@ -3,11 +3,13 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash
 from ..models import Book
 from .. import db
 from ..forms.book_form import BookForm
+from flask_login import login_required
 
 book_bp = Blueprint("book", __name__)
 
 
 @book_bp.route("/books")
+@login_required
 def books():
 
     books = Book.query.all()
@@ -19,6 +21,7 @@ def books():
     
  
 @book_bp.route("/add-book", methods=["GET", "POST"])
+@login_required
 def add_book():
 
     if request.method == "POST":
@@ -54,6 +57,7 @@ def add_book():
     return render_template("add_book.html")   
 
 @book_bp.route("/books/edit/<int:book_id>", methods=["GET", "POST"])
+@login_required
 def edit_book(book_id):
 
     book = Book.query.get_or_404(book_id)

@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for,flash
+from flask_login import login_required
 from datetime import datetime, date
 from app.forms import IssueBookForm
 
@@ -14,6 +15,7 @@ transaction_bp = Blueprint("transaction", __name__)
 
 
 @transaction_bp.route("/issued-books")
+@login_required
 def issued_books():
 
     transactions = Transaction.query.filter_by(
@@ -27,6 +29,7 @@ def issued_books():
 
 
 @transaction_bp.route("/transactions")
+@login_required
 def transactions():
 
     transactions = Transaction.query.order_by(
@@ -47,6 +50,7 @@ def transactions():
 
 
 @transaction_bp.route("/issue", methods=["GET", "POST"])
+@login_required
 def issue_book():
 
     form = IssueBookForm()
@@ -100,6 +104,7 @@ def issue_book():
 
 
 @transaction_bp.route("/return/<int:transaction_no>")
+@login_required
 def return_book_route(transaction_no):
 
     success, message = return_book(
@@ -118,6 +123,7 @@ def return_book_route(transaction_no):
     "/reissue/<int:transaction_no>",
     methods=["GET", "POST"]
 )
+@login_required
 def reissue_book_route(transaction_no):
 
     transaction = Transaction.query.filter_by(

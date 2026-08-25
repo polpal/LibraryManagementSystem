@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, redirect, url_for,flash
+from flask_login import login_required
 
 from ..models import db, Member,Transaction
 from ..forms.member_form import MemberForm
@@ -9,6 +10,7 @@ member_bp = Blueprint("member", __name__)
 
 
 @member_bp.route("/members")
+@login_required
 def members():
 
     members = Member.query.all()
@@ -20,6 +22,7 @@ def members():
 
 
 @member_bp.route("/members/add", methods=["GET", "POST"])
+@login_required
 def add_member():
 
     # Find all existing MEM member numbers
@@ -87,6 +90,7 @@ def add_member():
     )
     
 @member_bp.route("/members/edit/<int:member_id>", methods=["GET", "POST"])
+@login_required
 def edit_member(member_id):
 
     member = Member.query.get_or_404(member_id)
@@ -116,6 +120,7 @@ def edit_member(member_id):
     )
     
 @member_bp.route("/members/delete/<int:member_id>", methods=["POST"])
+@login_required
 def delete_member(member_id):
 
     member = Member.query.get_or_404(member_id)

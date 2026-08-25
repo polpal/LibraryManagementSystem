@@ -44,10 +44,12 @@
 
                 <div class="collapse navbar-collapse" id="mainNavbar">
                     <ul class="navbar-nav ms-auto">
-                        {% set nav_items = [ ('Home', 'main.index'), ('Books',
-                        'book.books'),('Members','member.members'), ('Issued Books',
-                        'transaction.issued_books'),('Issue Books', 'transaction.issue_book')] %} {%
-                        for name, endpoint in nav_items %}
+                        {% if current_user.is_authenticated %} {% set nav_items = [ ('Dashboard',
+                        'dashboard.dashboard'), ('Books', 'book.books'), ('Members',
+                        'member.members'), ('Issued Books', 'transaction.issued_books'), ('Issue
+                        Books', 'transaction.issue_book'), ('Logout', 'auth.logout') ] %} {% else %}
+                        {% set nav_items = [ ('Home', 'main.index'), ('Login', 'auth.login') ] %} {%
+                        endif %} {% for name, endpoint in nav_items %}
 
                         <li class="nav-item">
                             <a
