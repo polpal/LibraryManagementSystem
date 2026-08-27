@@ -3,7 +3,7 @@ from config import Config
 from .models import db
 from flask_wtf import CSRFProtect
 from app.utils.logger import logger
-from flask_login import LoginManager
+from flask_login import LoginManager, current_user
 from flask_migrate import Migrate
 csrf = CSRFProtect()
 login_manager = LoginManager()
@@ -37,6 +37,7 @@ def create_app():
     from .routes.admin import admin_bp
     from .routes.dashboard_routes import dashboard_bp
     from .routes.user_routes import user_bp
+    from .routes.profile_routes import profile_bp
 
     app.register_blueprint(main_bp)
     app.register_blueprint(member_bp)
@@ -46,5 +47,18 @@ def create_app():
     app.register_blueprint(admin_bp)
     app.register_blueprint(dashboard_bp)
     app.register_blueprint(user_bp)
+    app.register_blueprint(profile_bp)
+
+    @app.after_request
+    def prevent_browser_cache(response):
+         if current_user.is_authenticated:
+
+            response.headers["Cache-Control"] = (
+                "no-store, no-cache, must-revalidate, max-age=0"
+            )
+            response.headers["Pragma"] = "no-cache"
+            response.headers["Expires"] = "0"
+
+         return response
 
     return app

@@ -75,6 +75,30 @@ def edit_user(user_id):
     form = EditUserForm(obj=user)
 
     if form.validate_on_submit():
+        
+        if user.id == current_user.id:
+
+            if form.role.data != user.role:
+
+                flash(
+                    "You cannot change your own role.",
+                    "danger"
+                )
+
+                return redirect(
+                    url_for("user.users")
+                )
+
+            if form.status.data != user.status:
+
+                flash(
+                    "You cannot change your own status.",
+                    "danger"
+                )
+
+                return redirect(
+                    url_for("user.users") 
+                )
 
         try:
 

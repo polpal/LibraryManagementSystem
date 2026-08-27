@@ -26,4 +26,18 @@ $(document).ready(function () {
             },
         });
     }
+
+    if ($("#usersTable").length) {
+        $("#usersTable").DataTable({
+            pageLength: 10,
+            lengthMenu: [10, 25, 50, 100],
+
+            order: [[2, "asc"]],
+
+            language: {
+                emptyTable: "No users are currently available.",
+                zeroRecords: "No matching users found.",
+            },
+        });
+    }
 });
