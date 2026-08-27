@@ -9,3 +9,10 @@ main_bp = Blueprint("main", __name__)
 @main_bp.route("/")
 def index():
  return render_template("index.html")
+
+@main_bp.app_errorhandler(403)
+def forbidden(error):
+
+    return render_template(
+        "errors/403.html"
+    ), 403

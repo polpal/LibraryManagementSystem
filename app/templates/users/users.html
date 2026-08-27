@@ -1,0 +1,62 @@
+{% extends "base.html" %} {% block title %} Users {% endblock %} {% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>User Management</h2>
+
+    <a href="{{ url_for('user.add_user') }}" class="btn btn-primary"> Add User </a>
+</div>
+
+<table
+    id="usersTable"
+    class="library-table table table-bordered table-striped table-hover"
+    data-empty-message="No users available."
+>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Username</th>
+            <th>Role</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for user in users %}
+
+        <tr>
+            <td>{{ user.id }}</td>
+            <td>{{ user.username }}</td>
+            <td>{{ user.role }}</td>
+            <td>{{ user.status }}</td>
+            <td>
+                <div class="d-flex gap-2">
+                    <a
+                        href="{{ url_for('user.edit_user', user_id=user.id) }}"
+                        class="btn btn-sm btn-primary"
+                    >
+                        Edit
+                    </a>
+
+                    <button
+                        type="button"
+                        class="btn btn-sm btn-danger confirm-modal-trigger"
+                        data-modal-title="Delete User"
+                        data-modal-message="Are you sure you want to delete this user?"
+                        data-modal-action="{{ url_for('user.delete_user', user_id=user.id) }}"
+                        data-modal-confirm="Delete"
+                    >
+                        Delete
+                    </button>
+                </div>
+            </td>
+        </tr>
+
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- Reusable confirmation modal -->
+{% include "includes/confirm_modal.html" %} {% endblock %} {% block scripts %}
+<script src="{{ url_for('static', filename='js/confirm_modal.js') }}"></script>
+{% endblock %}
