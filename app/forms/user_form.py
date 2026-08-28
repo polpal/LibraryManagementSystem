@@ -1,6 +1,14 @@
+from dataclasses import field
+from app.models import User, user
 from flask_wtf import FlaskForm
 from wtforms import StringField,SubmitField,PasswordField,SelectField
-from wtforms.validators import DataRequired, Length, EqualTo
+from wtforms.validators import (
+    DataRequired,
+    Length,
+    EqualTo,
+    Email,
+    ValidationError
+)
 
 
 class UserForm(FlaskForm):
@@ -47,6 +55,57 @@ class UserForm(FlaskForm):
         validators=[DataRequired()]
     )
 
+    email = StringField(
+    "Email",
+    validators=[
+        DataRequired(),
+        Email(),
+        Length(max=120)
+    ]
+)
+
+    phone = StringField(
+    "Phone",
+    validators=[
+        DataRequired(),
+        Length(min=10, max=20)
+    ]
+)
+
     submit = SubmitField(
             "Save"
+        )
+    def validate_username(self, field):
+
+        user = User.query.filter_by(
+        username=field.data
+    ).first()
+
+        if user:
+
+            raise ValidationError(
+            "Username already exists."
+        )
+    
+    def validate_email(self, field):
+
+        user = User.query.filter_by(
+        email=field.data
+    ).first()
+
+        if user:
+
+            raise ValidationError(
+            "Email already exists."
+        )
+    def validate_phone(self, field):
+
+        user = User.query.filter_by(
+        phone=field.data
+    ).first()
+
+        if user:
+
+            raise ValidationError(
+            "Phone number already exists."
         )

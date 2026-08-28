@@ -37,13 +37,15 @@ def add_user():
     if form.validate_on_submit():
 
         user = User(
-            username=form.username.data,
-            password_hash=generate_password_hash(
-                form.password.data
-            ),
-            role=form.role.data,
-            status=form.status.data
-        )
+    username=form.username.data,
+    email=form.email.data,
+    phone=form.phone.data,
+    password_hash=generate_password_hash(
+        form.password.data
+    ),
+    role=form.role.data,
+    status=form.status.data
+)
 
         db.session.add(user)
         db.session.commit()
@@ -75,7 +77,10 @@ def edit_user(user_id):
     if not user:
      abort(404)
 
-    form = EditUserForm(obj=user)
+    form = EditUserForm(
+    user_id=user.id,
+    obj=user
+)
 
     if form.validate_on_submit():
         
