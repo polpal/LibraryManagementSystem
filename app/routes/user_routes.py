@@ -1,8 +1,8 @@
-from flask import Blueprint, render_template,redirect, url_for, flash
+from flask import Blueprint, abort, render_template,redirect, url_for, flash
 from flask_login import login_required
 
 from app.utils.decorators import admin_required
-from app.models import User,db
+from app.models import User,db, user
 from werkzeug.security import generate_password_hash
 from app.forms import UserForm, EditUserForm
 from flask_login import current_user
@@ -70,7 +70,10 @@ def add_user():
 @admin_required
 def edit_user(user_id):
 
-    user = User.query.get_or_404(user_id)
+    user = db.session.get(User, user_id)
+
+    if not user:
+     abort(404)
 
     form = EditUserForm(obj=user)
 

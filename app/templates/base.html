@@ -79,6 +79,14 @@
                                         My Profile
                                     </a>
                                 </li>
+                                <li>
+                                    <a
+                                        class="dropdown-item"
+                                        href="{{ url_for('profile.change_password') }}"
+                                    >
+                                        Change Password
+                                    </a>
+                                </li>
 
                                 <li>
                                     <a class="dropdown-item" href="{{ url_for('auth.logout') }}">

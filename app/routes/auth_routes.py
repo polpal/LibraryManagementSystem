@@ -35,11 +35,11 @@ def login():
                 "Invalid username",
                 "danger"
             )
+        elif user.status != "Active":
 
-        elif not check_password_hash(
-            user.password_hash,
-            form.password.data
-        ):
+            flash("Your account is inactive.", "danger")
+    
+        elif not user.check_password( form.password.data):
 
             flash(
                 "Invalid password",
@@ -55,9 +55,14 @@ def login():
                 "success"
             )
 
-            return redirect(
-                url_for("dashboard.dashboard")
-            )
+            if user.role == "Admin":
+             return redirect( url_for("dashboard.dashboard"))
+
+            elif user.role == "Librarian":
+
+                return redirect(url_for("dashboard.dashboard"))
+
+            return redirect( url_for("dashboard.dashboard"))
 
     return render_template(
         "auth/login.html",
