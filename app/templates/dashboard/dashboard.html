@@ -20,6 +20,25 @@
 
 <div class="row g-4">
 
+    {% if current_user.role == "Admin" %}
+
+    <!-- User Management -->
+    <div class="col-md-6 col-lg-4">
+        <a href="{{ url_for('user.users') }}" class="text-decoration-none">
+            <div class="card dashboard-card card-users shadow-sm">
+                <div class="card-body">
+                    <div class="card-icon">👤</div>
+                    <h5>User Management</h5>
+                    <h2>⚙️</h2>
+                    <p>Manage system users →</p>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    {% endif %}
+
+
     <!-- Total Books -->
     <div class="col-md-6 col-lg-4">
         <a href="{{ url_for('book.books') }}" class="text-decoration-none">
