@@ -113,6 +113,8 @@ def edit_user(user_id):
             user.username = form.username.data
             user.role = form.role.data
             user.status = form.status.data
+            user.email = form.email.data
+            user.phone = form.phone.data
 
             db.session.commit()
 

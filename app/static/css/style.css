@@ -11,3 +11,115 @@ h1 {
 .container {
     margin-top: 50px;
 }
+
+.carousel-img {
+    height: 600px;
+    object-fit: cover;
+}
+
+.carousel-caption {
+    bottom: 25%;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.8);
+}
+.navbar-brand {
+    letter-spacing: 0.3px;
+}
+
+.navbar .nav-link {
+    transition: opacity 0.2s ease;
+}
+
+.navbar .nav-link:hover {
+    opacity: 0.8;
+}
+
+.navbar .nav-link.active {
+    font-weight: 600;
+}
+
+.navbar .btn-primary {
+    border-radius: 20px;
+}
+
+
+/* ==============================
+   Dashboard
+   ============================== */
+
+.dashboard-header {
+    padding: 10px 5px;
+}
+
+.dashboard-card {
+    border: none;
+    border-radius: 15px;
+    transition: all 0.25s ease;
+    min-height: 190px;
+    color: white;
+    overflow: hidden;
+}
+
+.dashboard-card .card-body {
+    padding: 25px;
+    position: relative;
+}
+
+.dashboard-card h5 {
+    font-weight: 600;
+    margin-top: 10px;
+}
+
+.dashboard-card h2 {
+    font-size: 2.4rem;
+    font-weight: 700;
+    margin: 10px 0;
+}
+
+.dashboard-card p {
+    margin: 0;
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
+
+/* Icons */
+
+.card-icon {
+    font-size: 2.2rem;
+}
+
+
+/* Hover effect */
+
+.dashboard-card:hover {
+    transform: translateY(-7px);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.20) !important;
+}
+
+
+/* Card backgrounds */
+
+.card-books {
+    background: linear-gradient(135deg, #2563eb, #3b82f6);
+}
+
+.card-available {
+    background: linear-gradient(135deg, #059669, #10b981);
+}
+
+.card-issued {
+    background: linear-gradient(135deg, #7c3aed, #8b5cf6);
+}
+
+.card-members {
+    background: linear-gradient(135deg, #0891b2, #06b6d4);
+}
+
+.card-overdue {
+    background: linear-gradient(135deg, #dc2626, #ef4444);
+}
+
+.card-active {
+    background: linear-gradient(135deg, #d97706, #f59e0b);
+}
+

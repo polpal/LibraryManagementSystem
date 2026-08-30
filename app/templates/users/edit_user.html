@@ -18,9 +18,30 @@
         </div>
 
         <div class="col-md-6 mb-3">
+             {{ form.email.label(class="form-label") }}
+             {{ form.email(class="form-control") }}
+
+            {% for error in form.email.errors %}
+              <div class="text-danger small">
+                {{ error }}
+              </div>
+            {% endfor %}
+        </div>
+
+        <div class="col-md-6 mb-3">
             {{ form.role.label(class="form-label") }} {{ form.role(class="form-select") }} {% for
             error in form.role.errors %}
             <div class="text-danger small">{{ error }}</div>
+            {% endfor %}
+        </div>
+        <div class="col-md-6 mb-3">
+          {{ form.phone.label(class="form-label") }}
+          {{ form.phone(class="form-control") }}
+
+           {% for error in form.phone.errors %}
+              <div class="text-danger small">
+                {{ error }}
+              </div>
             {% endfor %}
         </div>
 
@@ -30,6 +51,7 @@
             <div class="text-danger small">{{ error }}</div>
             {% endfor %}
         </div>
+        
     </div>
 
     <button type="submit" class="btn btn-primary">Update User</button>

@@ -20,7 +20,9 @@ with app.app_context():
         admin = User(
             username="admin",
             password_hash=generate_password_hash("admin123"),
-            role="Admin"
+            role="Admin",
+            email='admin@library.com',
+            phone='9999999999'
         )
 
         db.session.add(admin)

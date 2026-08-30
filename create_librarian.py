@@ -20,7 +20,9 @@ with app.app_context():
         librarian = User(
             username="librarian",
             password_hash=generate_password_hash("lib123"),
-            role="Librarian"
+            role="Librarian",
+            email='librarian@library.com',
+            phone='8888888888'
         )
 
         db.session.add(librarian)

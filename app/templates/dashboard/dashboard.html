@@ -1,73 +1,115 @@
-{% extends "base.html" %} {% block title %}Dashboard{% endblock %} {% block content %}
+```html
+{% extends "base.html" %}
 
-<h2>Library Dashboard</h2>
+{% block title %}Dashboard{% endblock %}
 
-<p>Welcome, {{ current_user.username }}</p>
+{% block content %}
 
-<p>Role: {{ current_user.role }}</p>
+<div class="dashboard-header mb-4">
+    <h2 class="fw-bold">Library Dashboard</h2>
 
-<div class="row mt-4">
+    <p class="mb-1">
+        Welcome, <strong>{{ current_user.username }}</strong>
+    </p>
+
+    <span class="badge bg-dark">
+        {{ current_user.role }}
+    </span>
+</div>
+
+
+<div class="row g-4">
+
     <!-- Total Books -->
-    <div class="col-md-3 mb-3">
-        <div class="card shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title">Total Books</h5>
-                <h2>{{ total_books }}</h2>
+    <div class="col-md-6 col-lg-4">
+        <a href="{{ url_for('book.books') }}" class="text-decoration-none">
+            <div class="card dashboard-card card-books shadow-sm">
+                <div class="card-body">
+                    <div class="card-icon">📚</div>
+                    <h5>Total Books</h5>
+                    <h2>{{ total_books }}</h2>
+                    <p>View all books →</p>
+                </div>
             </div>
-        </div>
+        </a>
     </div>
+
 
     <!-- Available Books -->
-    <div class="col-md-3 mb-3">
-        <div class="card shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title">Available Books</h5>
-                <h2>{{ available_books }}</h2>
+    <div class="col-md-6 col-lg-4">
+        <a href="{{ url_for('book.books') }}" class="text-decoration-none">
+            <div class="card dashboard-card card-available shadow-sm">
+                <div class="card-body">
+                    <div class="card-icon">📗</div>
+                    <h5>Available Books</h5>
+                    <h2>{{ available_books }}</h2>
+                    <p>View available books →</p>
+                </div>
             </div>
-        </div>
+        </a>
     </div>
+
 
     <!-- Issued Books -->
-    <div class="col-md-3 mb-3">
-        <div class="card shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title">Issued Books</h5>
-                <h2>{{ issued_books }}</h2>
+    <div class="col-md-6 col-lg-4">
+        <a href="{{ url_for('transaction.issued_books') }}" class="text-decoration-none">
+            <div class="card dashboard-card card-issued shadow-sm">
+                <div class="card-body">
+                    <div class="card-icon">📕</div>
+                    <h5>Issued Books</h5>
+                    <h2>{{ issued_books }}</h2>
+                    <p>View issued books →</p>
+                </div>
             </div>
-        </div>
+        </a>
     </div>
+
 
     <!-- Total Members -->
-    <div class="col-md-3 mb-3">
-        <div class="card shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title">Total Members</h5>
-                <h2>{{ total_members }}</h2>
+    <div class="col-md-6 col-lg-4">
+        <a href="{{ url_for('member.members') }}" class="text-decoration-none">
+            <div class="card dashboard-card card-members shadow-sm">
+                <div class="card-body">
+                    <div class="card-icon">👥</div>
+                    <h5>Total Members</h5>
+                    <h2>{{ total_members }}</h2>
+                    <p>View members →</p>
+                </div>
             </div>
-        </div>
+        </a>
     </div>
 
+
     <!-- Overdue Books -->
-    <div class="col-md-3 mb-3">
-        <div class="card shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title">Overdue Books</h5>
-                <h2>{{ overdue_books }}</h2>
+    <div class="col-md-6 col-lg-4">
+        <a href="{{ url_for('transaction.issued_books') }}" class="text-decoration-none">
+            <div class="card dashboard-card card-overdue shadow-sm">
+                <div class="card-body">
+                    <div class="card-icon">⚠️</div>
+                    <h5>Overdue Books</h5>
+                    <h2>{{ overdue_books }}</h2>
+                    <p>Check overdue books →</p>
+                </div>
             </div>
-        </div>
+        </a>
     </div>
 
 
     <!-- Active Members -->
-    <div class="col-md-3 mb-3">
-        <div class="card shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title">Active Members</h5>
-                <h2>{{ active_members }}</h2>
+    <div class="col-md-6 col-lg-4">
+        <a href="{{ url_for('member.members') }}" class="text-decoration-none">
+            <div class="card dashboard-card card-active shadow-sm">
+                <div class="card-body">
+                    <div class="card-icon">✅</div>
+                    <h5>Active Members</h5>
+                    <h2>{{ active_members }}</h2>
+                    <p>View active members →</p>
+                </div>
             </div>
-        </div>
+        </a>
     </div>
+
 </div>
 
 {% endblock %}
-
+```

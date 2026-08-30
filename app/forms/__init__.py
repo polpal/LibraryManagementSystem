@@ -4,3 +4,4 @@ from .issue_book_form import IssueBookForm
 from .user_form import UserForm
 from .edit_user_form import EditUserForm
 from .change_password_form import ChangePasswordForm
+from .profile_form import ProfileForm
