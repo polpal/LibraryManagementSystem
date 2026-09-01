@@ -1,7 +1,6 @@
-/* LOGIN PAGE */
-
-.login-page {
+.login-wrapper {
     min-height: 75vh;
+
     display: flex;
     justify-content: center;
     align-items: center;
@@ -11,13 +10,13 @@
     width: 100%;
     max-width: 450px;
 
-    background: #ffffff;
+    background: #fff;
 
     padding: 40px;
 
     border-radius: 20px;
 
-    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
 }
 
 .login-logo {
