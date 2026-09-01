@@ -7,6 +7,7 @@ class LoginForm(FlaskForm):
 
     username = StringField(
         "Username",
+        render_kw={"placeholder": "Enter username"},
         validators=[
             DataRequired(),
             Length(max=50)
@@ -15,6 +16,7 @@ class LoginForm(FlaskForm):
 
     password = PasswordField(
         "Password",
+         render_kw={"placeholder": "Enter password"},
         validators=[
             DataRequired()
         ]

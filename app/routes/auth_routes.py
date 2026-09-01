@@ -6,7 +6,7 @@ from flask import (
     flash
 )
 
-from flask_login import login_user,logout_user
+from flask_login import login_user,logout_user,login_required
 
 from ..forms.login_form import LoginForm
 from ..models import User
@@ -48,8 +48,9 @@ def login():
 
         else:
             print("LOGIN SUCCESSFUL")
+            from flask import session
             login_user(user)
-
+            session.permanent = True
             flash(
                 "Login successful",
                 "success"
@@ -70,6 +71,7 @@ def login():
     )
     
 @auth_bp.route("/logout")
+@login_required
 def logout():
 
     logout_user()

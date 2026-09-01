@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template
 from flask_login import login_required
 from app.utils.decorators import admin_required
-from app.models import Book, Member, Transaction
+from app.models import Book, Member, Transaction,User
 from datetime import date
 
 
@@ -38,6 +38,11 @@ def dashboard():
     active_members = Member.query.filter_by(
     status="Active"
     ).count()
+    total_users = User.query.count()
+    
+    recent_transactions = Transaction.query.order_by(
+    Transaction.id.desc()
+).limit(5).all()
 
     return render_template(
         "dashboard/dashboard.html",
@@ -46,7 +51,9 @@ def dashboard():
         issued_books=issued_books,
         total_members=total_members,
         overdue_books=overdue_books,
-        active_members=active_members
+        active_members=active_members,
+        total_users=total_users,
+        recent_transactions=recent_transactions
     )
     
 

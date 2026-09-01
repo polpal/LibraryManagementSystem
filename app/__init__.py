@@ -9,6 +9,7 @@ csrf = CSRFProtect()
 login_manager = LoginManager()
 from .models import User
 from .routes.auth_routes import auth_bp
+from flask import session
 migrate = Migrate()
 
 @login_manager.user_loader
@@ -60,5 +61,10 @@ def create_app():
             response.headers["Expires"] = "0"
 
          return response
+     
+    @app.before_request
+    def make_session_permanent():
+
+        session.permanent = True
 
     return app

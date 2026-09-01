@@ -1,3 +1,4 @@
+from datetime import timedelta
 import os
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
@@ -11,3 +12,7 @@ class Config:
     )
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    
+    PERMANENT_SESSION_LIFETIME = timedelta(
+        minutes=30
+    )
