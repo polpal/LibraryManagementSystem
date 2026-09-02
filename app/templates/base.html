@@ -24,11 +24,11 @@
         {% block page_css %} {% endblock %}
     </head>
 
-    <body>
+    <body class="d-flex flex-column min-vh-100">
         <!-- =========================
          Navigation Bar
     ========================== -->
-
+        {% if not hide_navbar %}
         <nav class="navbar navbar-expand-lg navbar-dark navbar-dark custom-navbar">
             <div class="container">
                 <!-- Brand -->
@@ -171,12 +171,12 @@
                 </div>
             </div>
         </nav>
-
+        {% else %} {% block login_navbar %}{% endblock %} {% endif %}
         <!-- =========================
          Main Content
     ========================== -->
 
-        <main class="container mt-4">
+        <main class="container mt-4 flex-grow-1">
             {% with messages = get_flashed_messages(with_categories=true) %} {% if messages %} {%
             for category, message in messages %}
             <div
@@ -197,11 +197,11 @@
         <!-- =========================
          Footer
     ========================== -->
-
+        {% if not hide_footer %}
         <footer class="footer-custom text-white text-center p-3 mt-5">
             <p class="mb-0">Library Management System</p>
         </footer>
-
+        {% endif %}
         <!-- jQuery -->
         <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 

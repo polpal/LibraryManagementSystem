@@ -29,6 +29,7 @@ def add_book():
         accession_no = request.form.get("accession_no")
         book_name = request.form.get("book_name")
         author = request.form.get("author")
+        publisher = request.form.get("publisher")
         category = request.form.get("category")
 
         existing_book = Book.query.filter_by(
@@ -43,6 +44,7 @@ def add_book():
             accession_no=accession_no,
             book_name=book_name,
             author=author,
+            publisher=publisher,
             category=category,
             status="Available"
         )
@@ -73,6 +75,7 @@ def edit_book(book_id):
         book.book_name = form.book_name.data.strip()
         book.author = form.author.data.strip()
         book.category = form.category.data.strip()
+        book.publisher = form.publisher.data.strip()
 
         db.session.commit()
 

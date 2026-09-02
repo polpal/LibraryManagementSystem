@@ -50,6 +50,12 @@ class BookForm(FlaskForm):
         ]
     )
 
+    publisher = StringField(
+       "Publisher",
+        validators=[
+          Length(max=200)
+    ]
+  )
     category = StringField(
         "Category",
         validators=[

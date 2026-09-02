@@ -24,6 +24,11 @@ class Book(db.Model):
     author = db.Column(
         db.String(150)
     )
+    
+    publisher = db.Column(
+    db.String(200),
+    nullable=True
+    )
 
     category = db.Column(
         db.String(100)

@@ -1,6 +1,26 @@
-{% extends "base.html" %} {% block page_css %}
+{% extends "base.html" %} {% set hide_navbar = true %} {% set hide_footer = true %} {% block
+page_css %}
+
 <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}" />
-{% endblock %} {% block title %} Login {% endblock %} {% block content %}
+{% endblock %} {% block title %} Login {% endblock %} {% block login_navbar %}
+
+<nav class="login-navbar">
+    <div class="login-navbar-inner">
+        ```
+        <a href="{{ url_for('main.index') }}" class="login-brand">
+            <img
+                src="{{ url_for('static', filename='images/rail_logo_n.png') }}"
+                alt="Library Logo"
+            />
+            <span>हिंदी पुस्तकालय,मेट्रो रेलवे, कोलकाता</span>
+        </a>
+
+        <a href="{{ url_for('main.index') }}" class="login-home-btn"> 🏠 Home </a>
+    </div>
+    ```
+</nav>
+
+{% endblock %} {% block content %}
 
 <div class="login-wrapper">
     <div class="login-card">
@@ -29,11 +49,13 @@
                 class="form-control", placeholder="Enter Password" ) }}
             </div>
 
-            <div class="d-grid">{{ form.submit( class="btn btn-primary btn-lg" ) }}</div>
+            <div class="d-grid">{{ form.submit(class="btn btn-primary btn-lg") }}</div>
         </form>
     </div>
 </div>
 
 {% endblock %} {% block page_js %}
+
 <script src="{{ url_for('static', filename='js/login.js') }}"></script>
+
 {% endblock %}

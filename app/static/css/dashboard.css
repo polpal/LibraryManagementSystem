@@ -1,0 +1,270 @@
+/* ==============================
+   Dashboard
+   ============================== */
+
+.dashboard-header {
+    padding: 10px 0;
+}
+
+.dashboard-header h2 {
+    color: #0d6efd;
+    margin-bottom: 5px;
+}
+
+.dashboard-header p {
+    color: #555;
+}
+
+.dashboard-header .badge {
+    padding: 7px 12px;
+    font-size: 0.85rem;
+}
+
+
+/* ==============================
+   Today's Status
+   ============================== */
+
+.dashboard-status {
+    border: none;
+    border-left: 5px solid #0d6efd;
+    border-radius: 10px;
+}
+
+
+/* ==============================
+   Dashboard Cards
+   ============================== */
+
+.dashboard-card {
+    position: relative;
+
+    border: none;
+    border-radius: 16px;
+
+    min-height: 155px;
+
+    color: white;
+
+    overflow: hidden;
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+
+/* Card content */
+
+.dashboard-card .card-body {
+    padding: 20px;
+
+    position: relative;
+
+    z-index: 2;
+}
+
+
+/* Card icon */
+
+.card-icon {
+    font-size: 2.4rem;
+
+    margin-bottom: 8px;
+
+    line-height: 1;
+}
+
+
+/* Card title */
+
+.dashboard-card h5 {
+    margin: 0;
+
+    font-size: 1rem;
+
+    font-weight: 600;
+}
+
+
+/* Number */
+
+.dashboard-card h2 {
+    margin: 5px 0;
+
+    font-size: 2rem;
+
+    font-weight: 700;
+}
+
+
+/* Description */
+
+.dashboard-card p {
+    margin: 0;
+
+    font-size: 0.85rem;
+
+    opacity: 0.9;
+}
+
+
+/* ==============================
+   Decorative Circle
+   ============================== */
+
+.dashboard-card::after {
+    content: "";
+
+    position: absolute;
+
+    width: 120px;
+    height: 120px;
+
+    right: -35px;
+    bottom: -45px;
+
+    border-radius: 50%;
+
+    background: rgba(255, 255, 255, 0.12);
+}
+
+
+/* ==============================
+   Hover Effect
+   ============================== */
+
+.dashboard-card:hover {
+    transform: translateY(-6px);
+
+    box-shadow:
+        0 12px 28px rgba(0, 0, 0, 0.18) !important;
+}
+
+
+/* ==============================
+   Card Backgrounds
+   ============================== */
+
+.card-books {
+    background: linear-gradient(
+        135deg,
+        #2563eb,
+        #3b82f6
+    );
+}
+
+.card-available {
+    background: linear-gradient(
+        135deg,
+        #059669,
+        #10b981
+    );
+}
+
+.card-issued {
+    background: linear-gradient(
+        135deg,
+        #7c3aed,
+        #8b5cf6
+    );
+}
+
+.card-members {
+    background: linear-gradient(
+        135deg,
+        #0891b2,
+        #06b6d4
+    );
+}
+
+.card-overdue {
+    background: linear-gradient(
+        135deg,
+        #dc2626,
+        #ef4444
+    );
+}
+
+.card-active {
+    background: linear-gradient(
+        135deg,
+        #d97706,
+        #f59e0b
+    );
+}
+
+.card-users {
+    background: linear-gradient(
+        135deg,
+        #be185d,
+        #ec4899
+    );
+}
+
+
+/* ==============================
+   Quick Actions
+   ============================== */
+
+.dashboard-actions .btn {
+    border-radius: 10px;
+
+    font-weight: 600;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.dashboard-actions .btn:hover {
+    transform: translateY(-3px);
+
+    box-shadow:
+        0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+
+/* ==============================
+   Recent Transactions
+   ============================== */
+
+.dashboard-transactions {
+    border: none;
+
+    border-radius: 12px;
+
+    overflow: hidden;
+}
+
+.dashboard-transactions .card-header {
+    background: #f8f9fa;
+
+    border-bottom: 1px solid #dee2e6;
+
+    padding: 15px 20px;
+}
+
+.dashboard-transactions .table {
+    margin-bottom: 0;
+}
+
+
+/* ==============================
+   Mobile
+   ============================== */
+
+@media (max-width: 768px) {
+
+    .dashboard-card {
+        min-height: 145px;
+    }
+
+    .dashboard-card h2 {
+        font-size: 1.8rem;
+    }
+
+    .card-icon {
+        font-size: 2.1rem;
+    }
+}
