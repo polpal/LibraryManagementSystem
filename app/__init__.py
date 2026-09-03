@@ -39,11 +39,13 @@ def create_app():
     from .routes.dashboard_routes import dashboard_bp
     from .routes.user_routes import user_bp
     from .routes.profile_routes import profile_bp
+    from app.routes.book_category_routes import book_category_bp
 
     app.register_blueprint(main_bp)
     app.register_blueprint(member_bp)
     app.register_blueprint(book_bp)
     app.register_blueprint(transaction_bp)
+    app.register_blueprint(book_category_bp)
     app.register_blueprint(auth_bp)
     app.register_blueprint(admin_bp)
     app.register_blueprint(dashboard_bp)

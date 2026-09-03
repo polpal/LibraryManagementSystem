@@ -1,0 +1,53 @@
+{% extends "base.html" %} {% block content %}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Book Categories</h2>
+
+        <a href="{{ url_for('book_category.add_category') }}" class="btn btn-primary">
+            Add Category
+        </a>
+    </div>
+
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Category Name</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for category in categories %}
+
+            <tr>
+                <td>{{ category.id }}</td>
+                <td>{{ category.name }}</td>
+                <td>{{ category.status }}</td>
+                <td>
+                    <a
+                        href="{{ url_for('book_category.edit_category', id=category.id) }}"
+                        class="btn btn-sm btn-warning"
+                    >
+                        Edit
+                    </a>
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                    <form
+                        method="POST"
+                        action="{{ url_for('book_category.delete_category', id=category.id) }}"
+                        style="display: inline"
+                        onsubmit="return confirm('Are you sure you want to delete this category?');"
+                    >
+                        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

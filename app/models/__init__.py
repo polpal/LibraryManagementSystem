@@ -7,3 +7,4 @@ from .member import Member
 from .transaction import Transaction
 from .user import User
 from .admin import Admin
+from .book_category import BookCategory
