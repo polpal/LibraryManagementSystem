@@ -47,7 +47,7 @@
                 <td>{{ book.author }}</td>
                 <td>{{ book.publisher }}</td>
 
-                <td>{{ book.category }}</td>
+                <td>{{ book.category.name if book.category else "" }}</td>
 
                 <td>
                     {% if book.status == "Available" %}

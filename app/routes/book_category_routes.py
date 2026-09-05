@@ -33,24 +33,41 @@ def add_category():
     form = BookCategoryForm()
 
     if form.validate_on_submit():
+        existing_category = BookCategory.query.filter_by(
+        name=form.name.data.strip()
+        ).first()
+        if existing_category:
+             flash( "Category already exists.", "danger")
+             return render_template(
+            "categories/add_category.html",
+            form=form
+             )
+        try:
 
-        category = BookCategory(
+           category = BookCategory(
             name=form.name.data.strip(),
             status=form.status.data
         )
 
-        db.session.add(category)
-        db.session.commit()
+           db.session.add(category)
+           db.session.commit()
 
-        flash(
+           flash(
             "Category added successfully.",
             "success"
         )
 
-        return redirect(
+           return redirect(
             url_for("book_category.list_categories")
         )
+        except Exception as e:
 
+         db.session.rollback()
+
+        flash(
+            f"Error adding category: {str(e)}",
+            "danger"
+        )
     return render_template(
         "categories/add_category.html",
         form=form
@@ -65,19 +82,47 @@ def edit_category(id):
 
     if form.validate_on_submit():
 
-        category.name = form.name.data.strip()
-        category.status = form.status.data
+        existing_category = BookCategory.query.filter(
+            BookCategory.name == form.name.data.strip(),
+            BookCategory.id != category.id
+        ).first()
 
-        db.session.commit()
+        if existing_category:
+            flash(
+                "Category already exists.",
+                "danger"
+            )
 
-        flash(
-            "Category updated successfully.",
-            "success"
-        )
+            return render_template(
+                "categories/edit_category.html",
+                form=form,
+                category=category
+            )
 
-        return redirect(
-            url_for("book_category.list_categories")
-        )
+        try:
+
+            category.name = form.name.data.strip()
+            category.status = form.status.data
+
+            db.session.commit()
+
+            flash(
+                "Category updated successfully.",
+                "success"
+            )
+
+            return redirect(
+                url_for("book_category.list_categories")
+            )
+
+        except Exception as e:
+
+            db.session.rollback()
+
+            flash(
+                f"Error updating category: {str(e)}",
+                "danger"
+            )
 
     return render_template(
         "categories/edit_category.html",
@@ -104,15 +149,22 @@ def delete_category(id):
         return redirect(
             url_for("book_category.list_categories")
         )
+    try:
+      db.session.delete(category)
+      db.session.commit()
 
-    db.session.delete(category)
-    db.session.commit()
-
-    flash(
+      flash(
         "Category deleted successfully.",
         "success"
-    )
-
-    return redirect(
+        )
+      return redirect(
         url_for("book_category.list_categories")
+        )
+    except Exception as e:
+
+     db.session.rollback()
+
+    flash(
+        f"Error deleting category: {str(e)}",
+        "danger"
     )

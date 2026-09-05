@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 
-from ..models import Book
+from ..models import Book, BookCategory
 from .. import db
 from ..forms.book_form import BookForm
 from flask_login import login_required
@@ -30,8 +30,7 @@ def add_book():
         book_name = request.form.get("book_name")
         author = request.form.get("author")
         publisher = request.form.get("publisher")
-        category = request.form.get("category")
-
+        category_id = request.form.get("category_id")
         existing_book = Book.query.filter_by(
             accession_no=accession_no
         ).first()
@@ -45,7 +44,7 @@ def add_book():
             book_name=book_name,
             author=author,
             publisher=publisher,
-            category=category,
+           category_id=category_id,
             status="Available"
         )
 
@@ -55,8 +54,12 @@ def add_book():
         flash("Book added successfully.", "success")
 
         return redirect(url_for("book.books"))
-
-    return render_template("add_book.html")   
+    categories = BookCategory.query.filter_by(status="Active"
+).all()
+    return render_template(
+    "add_book.html",
+    categories=categories
+)   
 
 @book_bp.route("/books/edit/<int:book_id>", methods=["GET", "POST"])
 @login_required
@@ -68,13 +71,16 @@ def edit_book(book_id):
         book_id=book.id,
         obj=book
     )
-
+    form.category_id.choices = [
+    (category.id, category.name)
+    for category in BookCategory.query.filter_by(status="Active").all()
+]
     if form.validate_on_submit():
 
         book.accession_no = form.accession_no.data.strip()
         book.book_name = form.book_name.data.strip()
         book.author = form.author.data.strip()
-        book.category = form.category.data.strip()
+        book.category_id = form.category_id.data
         book.publisher = form.publisher.data.strip()
 
         db.session.commit()

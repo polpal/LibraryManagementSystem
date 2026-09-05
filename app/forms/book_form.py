@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField
+from wtforms import StringField,SelectField
 from wtforms.validators import DataRequired, Length, ValidationError
 
 from ..models import Book
@@ -56,9 +56,10 @@ class BookForm(FlaskForm):
           Length(max=200)
     ]
   )
-    category = StringField(
-        "Category",
-        validators=[
-            Length(max=100)
-        ]
-    )
+    category_id = SelectField(
+    "Category",
+    coerce=int,
+    validators=[
+        DataRequired()
+    ]
+)

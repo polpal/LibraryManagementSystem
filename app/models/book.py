@@ -30,9 +30,16 @@ class Book(db.Model):
     nullable=True
     )
 
-    category = db.Column(
-        db.String(100)
-    )
+    category_id = db.Column(
+    db.Integer,
+    db.ForeignKey("book_categories.id"),
+    nullable=False
+)
+
+    category = db.relationship(
+    "BookCategory",
+    backref="books"
+)
 
     status = db.Column(
         db.String(20),

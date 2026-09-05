@@ -41,10 +41,18 @@
         </div>
 
         <div class="mb-3">
-            <label class="form-label"> Category </label>
+    <label class="form-label"> Category </label>
 
-            <input type="text" name="category" class="form-control" />
-        </div>
+    <select name="category_id" class="form-select" required>
+        <option value="">-- Select Category --</option>
+
+        {% for category in categories %}
+        <option value="{{ category.id }}">
+            {{ category.name }}
+        </option>
+        {% endfor %}
+    </select>
+</div>
 
         <button type="submit" class="btn btn-success">Save</button>
 
