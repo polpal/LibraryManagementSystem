@@ -1,61 +1,135 @@
-{% extends "base.html" %} {% set hide_navbar = true %} {% set hide_footer = true %} {% block
-page_css %}
+{% extends "base.html" %}
 
-<link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}" />
-{% endblock %} {% block title %} Login {% endblock %} {% block login_navbar %}
+{% set hide_navbar = true %}
+{% set hide_footer = true %}
+
+{% block page_css %}
+
+<link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='css/login.css') }}"
+/>
+{% endblock %}
+
+{% block title %}
+Login
+{% endblock %}
+
+{% block login_navbar %}
 
 <nav class="login-navbar">
     <div class="login-navbar-inner">
-        ```
-        <a href="{{ url_for('main.index') }}" class="login-brand">
-            <img
-                src="{{ url_for('static', filename='images/rail_logo_n.png') }}"
-                alt="Library Logo"
-            />
-            <span>हिंदी पुस्तकालय,मेट्रो रेलवे, कोलकाता</span>
-        </a>
+    <a href="{{ url_for('main.index') }}" class="login-brand">
+        <img
+            src="{{ url_for('static', filename='images/rail_logo_n.png') }}"
+            alt="Library Logo"
+        />
 
-        <a href="{{ url_for('main.index') }}" class="login-home-btn"> 🏠 Home </a>
-    </div>
-    ```
-</nav>
+        <span>
+            हिंदी पुस्तकालय,मेट्रो रेलवे, कोलकाता
+        </span>
+    </a>
 
-{% endblock %} {% block content %}
+    <a
+        href="{{ url_for('main.index') }}"
+        class="login-home-btn"
+    >
+        🏠 Home
+    </a>
 
-<div class="login-wrapper">
-    <div class="login-card">
-        <div class="text-center mb-4">
-            <img
-                src="{{ url_for('static', filename='images/rail_logo_n.png') }}"
-                alt="Logo"
-                class="login-logo"
-            />
-
-            <h2 class="mt-3">Library Management System</h2>
-
-            <p class="text-muted">Please login to continue</p>
-        </div>
-
-        <form method="POST">
-            {{ form.hidden_tag() }}
-
-            <div class="mb-3">
-                {{ form.username.label(class="form-label") }} {{ form.username(
-                class="form-control", placeholder="Enter Username" ) }}
-            </div>
-
-            <div class="mb-3">
-                {{ form.password.label(class="form-label") }} {{ form.password(
-                class="form-control", placeholder="Enter Password" ) }}
-            </div>
-
-            <div class="d-grid">{{ form.submit(class="btn btn-primary btn-lg") }}</div>
-        </form>
-    </div>
 </div>
 
-{% endblock %} {% block page_js %}
+</nav>
 
-<script src="{{ url_for('static', filename='js/login.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+
+<div class="login-wrapper">
+
+<div class="login-card">
+
+    <div class="text-center mb-4">
+
+        <img
+            src="{{ url_for('static', filename='images/rail_logo_n.png') }}"
+            alt="Logo"
+            class="login-logo"
+        />
+
+        <h2 class="mt-3">
+            Library Management System
+        </h2>
+
+        <p class="text-muted">
+            Please login to continue
+        </p>
+
+    </div>
+
+
+    <form method="POST">
+
+        {{ form.hidden_tag() }}
+
+
+        <div class="mb-3">
+
+            {{ form.username.label(class="form-label") }}
+
+            {{ form.username(
+                class="form-control",
+                placeholder="Enter Username"
+            ) }}
+
+        </div>
+
+
+        <div class="mb-2">
+
+            {{ form.password.label(class="form-label") }}
+
+            {{ form.password(
+                class="form-control",
+                placeholder="Enter Password"
+            ) }}
+
+        </div>
+
+
+        <div class="text-end mb-3">
+
+            <a
+                href="{{ url_for('auth.forgot_password') }}"
+                class="forgot-password-link"
+            >
+                Forgot Password?
+            </a>
+
+        </div>
+
+
+        <div class="d-grid mb-5">
+
+            {{ form.submit(
+                class="btn btn-primary btn-lg"
+            ) }}
+
+        </div>
+
+    </form>
+
+</div>
+
+</div>
+{% endblock %}
+
+
+
+{% block page_js %}
+
+<script
+    src="{{ url_for('static', filename='js/login.js') }}"
+></script>
 
 {% endblock %}

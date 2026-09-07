@@ -6,7 +6,7 @@ body {
     margin: 0;
     padding: 0;
     height: 100%;
-    overflow: hidden;
+     overflow: hidden;
 }
 
 .login-navbar {
@@ -130,6 +130,14 @@ border-radius: 8px;
 min-height: 48px;
 border-radius: 8px;
 }
+.login-footer {
+    width: 100%;
+    text-align: center;
+    padding: 8px;
+    font-size: 13px;
+    color: #6c757d;
+    background: #f8f9fa;
+}
 
 /* =========================
 Mobile
@@ -184,5 +192,26 @@ Mobile
     background-position: center;
     background-repeat: no-repeat;
 
+    box-sizing: border-box;
+}
+
+/* =========================
+Login Page Full Screen Layout
+========================= */
+
+body:has(.login-wrapper) main {
+    margin-top: 0 !important;
+    padding: 0 !important;
+    max-width: none !important;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+body:has(.login-wrapper) .login-wrapper {
+    flex: 1;
+    min-height: 0;
+    height: auto;
     box-sizing: border-box;
 }

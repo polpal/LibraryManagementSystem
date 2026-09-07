@@ -151,11 +151,15 @@
     <!-- =========================
          Footer
     ========================== -->
-    {% if not hide_footer %}
-    <footer class="footer-custom text-white text-center p-3 mt-5">
-        <p class="mb-0">Library Management System</p>
-    </footer>
-    {% endif %}
+   {% if hide_footer %}
+<footer class="login-footer">
+    © 2026 Library Management System
+</footer>
+{% else %}
+<footer class="footer-custom text-white text-center p-3 mt-5">
+    <p class="mb-0">Library Management System</p>
+</footer>
+{% endif %}
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 

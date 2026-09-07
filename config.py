@@ -16,3 +16,11 @@ class Config:
     PERMANENT_SESSION_LIFETIME = timedelta(
         minutes=30
     )
+    MAIL_SERVER = "smtp.gmail.com"
+    MAIL_PORT = 587
+    MAIL_USE_TLS = True
+
+    MAIL_USERNAME = "partho.sarkar.cosh@gmail.com"
+    MAIL_PASSWORD = "lmjqmzrdwpamtbtg"
+
+    MAIL_DEFAULT_SENDER = "partho.sarkar.cosh@gmail.com"

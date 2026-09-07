@@ -10,7 +10,9 @@ login_manager = LoginManager()
 from .models import User
 from .routes.auth_routes import auth_bp
 from flask import session
+from .extensions import mail
 migrate = Migrate()
+
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -27,6 +29,7 @@ def create_app():
 
     db.init_app(app)
     migrate.init_app(app, db)
+    mail.init_app(app)
     csrf.init_app(app)
     login_manager.init_app(app)
     login_manager.login_view = "auth.login"
