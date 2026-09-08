@@ -8,7 +8,7 @@ from wtforms.validators import (
 )
 
 from app.models import User
-
+from flask_wtf.file import FileField, FileAllowed
 
 class ProfileForm(FlaskForm):
 
@@ -24,6 +24,13 @@ class ProfileForm(FlaskForm):
         )
 
         self.user_id = user_id
+
+    profile_picture = FileField(
+        "Profile Picture",
+        validators=[
+            FileAllowed(["jpg", "jpeg", "png"], "Only image files are allowed.")
+        ]
+    )
 
     email = StringField(
         "Email",
@@ -68,8 +75,7 @@ class ProfileForm(FlaskForm):
         field
     ):
 
-        user = User.query.filter_by(
-            phone=field.data
+        user = User.query.filter_by( phone=field.data
         ).first()
 
         if (

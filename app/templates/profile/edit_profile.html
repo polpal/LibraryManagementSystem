@@ -1,80 +1,94 @@
-{% extends "base.html" %}
-
-{% block title %}
-Edit Profile
-{% endblock %}
-
-{% block content %}
+{% extends "base.html" %} {% block title %} Edit Profile {% endblock %} {% block content %}
 
 <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card shadow-sm">
+            <div class="card-header">
+                <h4 class="mb-0">Edit Profile</h4>
+            </div>
 
-```
-<div class="col-md-8 col-lg-6">
+            <div class="card-body">
+                <form method="POST" id="EditProfileForm" enctype="multipart/form-data" novalidate>
+                    {{ form.hidden_tag() }}
 
-    <div class="card shadow-sm">
-
-        <div class="card-header">
-            <h4 class="mb-0">
-                Edit Profile
-            </h4>
-        </div>
-
-        <div class="card-body">
-
-            <form method="POST" id="EditProfileForm" novalidate>
-
-                {{ form.hidden_tag() }}
-
-                <div class="mb-3">
-
-                    {{ form.email.label(class="form-label") }}
-
-                    {{ form.email(class="form-control") }}
-
-                    {% for error in form.email.errors %}
-                    <div class="text-danger small">
-                        {{ error }}
+                    <div class="mb-3">
+                        {{ form.email.label(class="form-label") }} {{
+                        form.email(class="form-control") }} {% for error in form.email.errors %}
+                        <div class="text-danger small">{{ error }}</div>
+                        {% endfor %}
                     </div>
-                    {% endfor %}
 
-                </div>
-
-                <div class="mb-3">
-
-                    {{ form.phone.label(class="form-label") }}
-
-                    {{ form.phone(class="form-control") }}
-
-                    {% for error in form.phone.errors %}
-                    <div class="text-danger small">
-                        {{ error }}
+                    <div class="mb-3">
+                        {{ form.phone.label(class="form-label") }} {{
+                        form.phone(class="form-control") }} {% for error in form.phone.errors %}
+                        <div class="text-danger small">{{ error }}</div>
+                        {% endfor %}
                     </div>
-                    {% endfor %}
 
-                </div>
+                    <div class="mb-3">
+                        {{ form.profile_picture.label(class="form-label") }} {{
+                        form.profile_picture(class="form-control", id="profilePicture") }} {% for
+                        error in form.profile_picture.errors %}
+                        <div class="text-danger small">{{ error }}</div>
+                        {% endfor %}
 
-                <div class="d-flex gap-2">
+                        <!-- Image Preview -->
+                        <div class="text-center">
+                            {% if current_user.profile_picture %}
 
-                    {{ form.submit(class="btn btn-primary") }}
+                            <img
+                                id="imagePreview"
+                                src="{{ url_for(
+                    'static',
+                    filename='uploads/profile_pics/' + current_user.profile_picture
+                ) }}"
+                                alt="Profile Picture"
+                                class="rounded-circle img-thumbnail mt-3"
+                                width="150"
+                                height="150"
+                                style="object-fit: cover"
+                            />
 
-                    <a
-                        href="{{ url_for('profile.my_profile') }}"
-                        class="btn btn-secondary"
-                    >
-                        Cancel
-                    </a>
+                            {% else %}
 
-                </div>
+                            <div
+                                id="imagePreviewPlaceholder"
+                                class="rounded-circle bg-secondary text-white d-inline-flex align-items-center justify-content-center mt-3"
+                                style="width: 150px; height: 150px; font-size: 50px"
+                            >
+                                {{ current_user.username[0]|upper }}
+                            </div>
 
-            </form>
+                            <img
+                                id="imagePreview"
+                                src="#"
+                                alt="Profile Preview"
+                                class="rounded-circle img-thumbnail mt-3"
+                                width="150"
+                                height="150"
+                                style="object-fit: cover; display: none"
+                            />
 
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-center gap-2">
+                        {{ form.submit(class="btn btn-primary") }}
+
+                        <a href="{{ url_for('profile.my_profile') }}" class="btn btn-secondary">
+                            Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
         </div>
-
     </div>
-
-</div>
-```
-
 </div>
 
+{% endblock %} {% block page_js %}
+<script src="{{ url_for(
+    'static',
+    filename='js/profile.js'
+) }}"></script>
 {% endblock %}

@@ -11,3 +11,5 @@ instance/
 .vscode/
 
 *.log
+.env
+app/static/uploads/profile_pics/*

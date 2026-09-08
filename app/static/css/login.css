@@ -76,16 +76,27 @@ Login Layout
 ========================= */
 
 .login-wrapper {
-min-height: calc(100vh - 64px);
+    height: calc(100vh - 64px);
+    min-height: 0;
 
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-display: flex;
-align-items: center;
-justify-content: center;
+    padding: 20px;
 
-padding: 40px 20px;
+    background-image:
+        linear-gradient(
+            rgba(0, 0, 0, 0.35),
+            rgba(0, 0, 0, 0.35)
+        ),
+        url("../images/bck.jpg");
 
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 
+    box-sizing: border-box;
 }
 
 /* Login Card */
@@ -171,33 +182,12 @@ Mobile
 }
 
 
-.login-wrapper {
-    height: calc(100vh - 64px);
-    min-height: 0;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    padding: 20px;
-
-    background-image:
-        linear-gradient(
-            rgba(0, 0, 0, 0.35),
-            rgba(0, 0, 0, 0.35)
-        ),
-        url("../images/bck.jpg");
-
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-
-    box-sizing: border-box;
-}
 
 /* =========================
 Login Page Full Screen Layout
 ========================= */
+
+/* page become full screen  and footer seen
 
 body:has(.login-wrapper) main {
     margin-top: 0 !important;
@@ -214,4 +204,4 @@ body:has(.login-wrapper) .login-wrapper {
     min-height: 0;
     height: auto;
     box-sizing: border-box;
-}
+} */

@@ -40,4 +40,18 @@ $(document).ready(function () {
             },
         });
     }
+
+    if ($("#membersTable").length) {
+        $("#membersTable").DataTable({
+            pageLength: 10,
+            lengthMenu: [10, 25, 50, 100],
+
+            order: [[2, "asc"]],
+
+            language: {
+                emptyTable: "No members are currently available.",
+                zeroRecords: "No matching members found.",
+            },
+        });
+    }
 });

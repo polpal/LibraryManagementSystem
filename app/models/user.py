@@ -48,6 +48,12 @@ class User(UserMixin, db.Model):
     unique=True,
     nullable=False
     )
+    
+    profile_picture = db.Column(
+        db.String(255),
+        nullable=True
+    )
+    
     def __repr__(self):
         
         return f"<User {self.username}>"
@@ -72,26 +78,21 @@ class User(UserMixin, db.Model):
         self.email,
         salt="password-reset-salt"
     )
-@staticmethod
-def verify_reset_token(
-    token,
-    expiration=3600
-):
+    @staticmethod
+    def verify_reset_token(token,expiration=3600):
 
-    serializer = URLSafeTimedSerializer(
+        serializer = URLSafeTimedSerializer(
         current_app.config["SECRET_KEY"]
     )
 
-    try:
-        email = serializer.loads(
+        try:
+            email = serializer.loads(
             token,
             salt="password-reset-salt",
             max_age=expiration
         )
 
-    except Exception:
-        return None
+        except Exception:
+            return None
 
-    return User.query.filter_by(
-        email=email
-    ).first()
+        return User.query.filter_by( email=email).first()

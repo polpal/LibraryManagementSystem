@@ -2,7 +2,7 @@ from flask import Blueprint, abort, render_template,redirect, url_for, flash
 from flask_login import login_required
 
 from app.utils.decorators import admin_required
-from app.models import User,db, user
+from app.models import User,db
 from werkzeug.security import generate_password_hash
 from app.forms import UserForm, EditUserForm
 from flask_login import current_user
@@ -33,36 +33,29 @@ def users():
 def add_user():
 
     form = UserForm()
-
+    print("ADD USER ROUTE HIT")
     if form.validate_on_submit():
-
+        print(" USER FORM VALIDATED")
         user = User(
-    username=form.username.data,
-    email=form.email.data,
-    phone=form.phone.data,
-    password_hash=generate_password_hash(
-        form.password.data
-    ),
-    role=form.role.data,
-    status=form.status.data
-)
+                 username=form.username.data,
+                 email=form.email.data,
+                 phone=form.phone.data,
+                 password_hash=generate_password_hash( form.password.data ),
+                 role=form.role.data,
+                 status=form.status.data
+            )
+        try:
+            db.session.add(user)
+            db.session.commit()
 
-        db.session.add(user)
-        db.session.commit()
-
-        flash(
-            "User created successfully.",
-            "success"
-        )
-
-        return redirect(
-            url_for("user.users")
-        )
-
-    return render_template(
-        "users/add_user.html",
-        form=form
-    )
+            flash( "User created successfully.","success" )
+            return redirect(url_for("user.users") )
+        except Exception as e:
+             db.session.rollback()
+             flash("Something went wrong.", "danger")
+             print("FORM NOT VALIDATED")
+             print(form.errors)
+    return render_template( "users/add_user.html",form=form)
     
 @user_bp.route(
     "/edit/<int:user_id>",
