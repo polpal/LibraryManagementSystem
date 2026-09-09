@@ -1,5 +1,5 @@
 from dataclasses import field
-from app.models import User, user
+from app.models import User
 from flask_wtf import FlaskForm
 from wtforms import StringField,SubmitField,PasswordField,SelectField
 from wtforms.validators import (
@@ -41,7 +41,8 @@ class UserForm(FlaskForm):
         "Role",
         choices=[
             ("Admin", "Admin"),
-            ("Librarian", "Librarian")
+            ("Librarian", "Librarian"),
+            ("Member", "Member")
         ],
         default="Librarian",
         validators=[

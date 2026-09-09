@@ -1,6 +1,7 @@
 from flask import Flask
 from config import Config
 from .models import db
+from .models import User, Menu, RoleMenu
 from flask_wtf import CSRFProtect
 from app.utils.logger import logger
 from flask_login import LoginManager, current_user
@@ -71,5 +72,28 @@ def create_app():
     def make_session_permanent():
 
         session.permanent = True
+        
+    @app.context_processor
+    def inject_user_menus():
+
+        if current_user.is_authenticated:
+
+            menus = (
+                Menu.query
+                .join(RoleMenu, Menu.id == RoleMenu.menu_id)
+                .filter(
+                    RoleMenu.role_name == current_user.role,
+                    Menu.is_active == True
+                )
+                .order_by(Menu.display_order)
+                .all()
+            )
+
+        else:
+            menus = []
+
+        return {
+            "user_menus": menus
+        }
 
     return app

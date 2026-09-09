@@ -32,14 +32,6 @@
         <nav class="navbar navbar-expand-lg navbar-dark navbar-dark custom-navbar">
             <div class="container">
                 <!-- Brand -->
-
-                <!-- <a
-                    class="navbar-brand d-flex align-items-center fw-semibold"
-                    href="{{ url_for('main.index') }}"
-                >
-                    <span class="fs-4 me-2">📚</span>
-                    Bengali Library
-                </a> -->
                 <a
                     class="navbar-brand d-flex align-items-center"
                     href="{{ url_for('main.index') }}"
@@ -73,24 +65,22 @@
 
                 <div class="collapse navbar-collapse" id="mainNavbar">
                     <ul class="navbar-nav ms-auto align-items-lg-center">
-                        {% if current_user.is_authenticated %} {% set nav_items = [ ('Dashboard',
-                        'dashboard.dashboard'), ('Books', 'book.books'), ('Members',
-                        'member.members'), ('Issued Books', 'transaction.issued_books'), ('Issue
-                        Books', 'transaction.issue_book') ,('Categories',
-                        'book_category.list_categories')] %} {% if current_user.role == "Admin" %}
-                        {% set nav_items = nav_items + [ ('Users', 'user.users') ] %} {% endif %} {%
-                        for name, endpoint in nav_items %}
+                        {% if current_user.is_authenticated %}
 
-                        <li class="nav-item">
-                            <a
-                                class="nav-link px-3 {% if request.endpoint == endpoint %} active {% endif %}"
-                                href="{{ url_for(endpoint) }}"
-                            >
-                                {{ name }}
-                            </a>
-                        </li>
+                            {% for menu in user_menus %}
 
-                        {% endfor %}
+                                <li class="nav-item">
+                                  <a class="nav-link px-3 {% if request.endpoint == menu.endpoint %} active {% endif %}"
+                                     href="{{ url_for(menu.endpoint) }}"
+                                >
+                                    {% if menu.icon %}
+                                        <i class="bi {{ menu.icon }}"></i>
+                                    {% endif %}
+                                    {{ menu.menu_name }}
+                                 </a>
+                                </li>
+
+                            {% endfor %}
 
                         <!-- User Menu -->
 
