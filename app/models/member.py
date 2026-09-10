@@ -43,3 +43,18 @@ class Member(db.Model):
         db.String(20),
         default="Active"
     )
+    user_id = db.Column(
+        db.Integer,
+        db.ForeignKey("user.id"),
+        unique=True,
+        nullable=True
+)
+
+    user = db.relationship(
+         "User",
+         back_populates="member"
+)
+
+
+    def __repr__(self):
+     return f"<Member {self.member_no} - {self.name}>"
