@@ -1,0 +1,54 @@
+{% extends "base.html" %} {% block title %} My Books {% endblock %} {% block content %}
+
+<h3 class="mb-4">My Books</h3>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        {% if transactions %}
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Book</th>
+                    <th>Issue Date</th>
+                    <th>Due Date</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for transaction in transactions %}
+
+                <tr>
+                    <td>{{ transaction.book.book_name }}</td>
+
+                    <td>{{ transaction.issue_date }}</td>
+
+                    <td>{{ transaction.due_date }}</td>
+
+                    <td>
+                        {% if transaction.return_date %}
+
+                        <span class="badge bg-success"> Returned </span>
+
+                        {% else %}
+
+                        <span class="badge bg-primary"> Issued </span>
+
+                        {% endif %}
+                    </td>
+                </tr>
+
+                {% endfor %}
+            </tbody>
+        </table>
+
+        {% else %}
+
+        <div class="alert alert-info mb-0">You do not have any issued books currently.</div>
+
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}

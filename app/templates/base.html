@@ -69,7 +69,7 @@
 
                         <li class="nav-item">
                             <a
-                                class="nav-link px-3 {% if request.endpoint and menu.endpoint.split('.')[0] in request.endpoint %} active {% endif %}"
+                                class="nav-link px-3 {% if request.endpoint and request.endpoint.startswith(menu.active_prefix) %}active{% endif %}"
                                 href="{{ url_for(menu.endpoint) }}"
                             >
                                 {% if menu.icon %}

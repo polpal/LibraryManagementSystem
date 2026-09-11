@@ -1,5 +1,5 @@
-from flask import Blueprint, render_template, redirect, url_for, flash
-from flask_login import login_required
+from flask import Blueprint, render_template, redirect, url_for, flash, abort
+from flask_login import login_required, current_user
 
 from app.models.user import User
 from app.utils.decorators import role_required
@@ -158,3 +158,19 @@ def delete_member(member_id):
     flash("Member deleted successfully.", "success")
 
     return redirect(url_for("member.members"))
+
+
+@member_bp.route("/my-books")
+@login_required
+def my_books():
+
+    if current_user.role != "Member":
+        abort(403)
+
+    transactions = (
+        Transaction.query.filter(Transaction.member_id == current_user.member.id)
+        .order_by(Transaction.id.desc())
+        .all()
+    )
+
+    return render_template("my_books.html", transactions=transactions)
