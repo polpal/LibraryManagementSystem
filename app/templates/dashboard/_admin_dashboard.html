@@ -1,0 +1,27 @@
+<div class="alert alert-info shadow-sm">
+    <strong>Today's Status:</strong>
+    Books Available: {{ available_books }} | Books Issued: {{ issued_books }} | Overdue: {{
+    overdue_books }}
+</div>
+
+<div class="row g-3">
+    <!-- Total Users -->
+
+    <div class="col-md-6 col-lg-3">
+        <a href="{{ url_for('user.users') }}" class="text-decoration-none">
+            <div class="card dashboard-card card-users shadow-sm">
+                <div class="card-body">
+                    <div class="card-icon">👤</div>
+
+                    <h5>Total Users</h5>
+
+                    <h2>{{ total_users }}</h2>
+
+                    <p>Manage system users →</p>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    {% include "dashboard/_staff_cards.html" %}
+</div>

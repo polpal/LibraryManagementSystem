@@ -1,0 +1,33 @@
+<div class="row g-3">
+    <!-- My Issued Books -->
+
+    <div class="col-md-6">
+        <div class="card dashboard-card card-issued shadow-sm">
+            <div class="card-body">
+                <div class="card-icon">📚</div>
+
+                <h5>My Issued Books</h5>
+
+                <h2>{{ my_issued_books }}</h2>
+
+                <p>Books currently issued</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- My Overdue Books -->
+
+    <div class="col-md-6">
+        <div class="card dashboard-card card-overdue shadow-sm">
+            <div class="card-body">
+                <div class="card-icon">⚠️</div>
+
+                <h5>My Overdue Books</h5>
+
+                <h2>{{ my_overdue_books }}</h2>
+
+                <p>Books overdue for return</p>
+            </div>
+        </div>
+    </div>
+</div>

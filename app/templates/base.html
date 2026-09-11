@@ -65,22 +65,20 @@
 
                 <div class="collapse navbar-collapse" id="mainNavbar">
                     <ul class="navbar-nav ms-auto align-items-lg-center">
-                        {% if current_user.is_authenticated %}
+                        {% if current_user.is_authenticated %} {% for menu in user_menus %}
 
-                            {% for menu in user_menus %}
+                        <li class="nav-item">
+                            <a
+                                class="nav-link px-3 {% if request.endpoint and menu.endpoint.split('.')[0] in request.endpoint %} active {% endif %}"
+                                href="{{ url_for(menu.endpoint) }}"
+                            >
+                                {% if menu.icon %}
+                                <i class="bi {{ menu.icon }}"></i>
+                                {% endif %} {{ menu.menu_name }}
+                            </a>
+                        </li>
 
-                                <li class="nav-item">
-                                  <a class="nav-link px-3 {% if request.endpoint == menu.endpoint %} active {% endif %}"
-                                     href="{{ url_for(menu.endpoint) }}"
-                                >
-                                    {% if menu.icon %}
-                                        <i class="bi {{ menu.icon }}"></i>
-                                    {% endif %}
-                                    {{ menu.menu_name }}
-                                 </a>
-                                </li>
-
-                            {% endfor %}
+                        {% endfor %}
 
                         <!-- User Menu -->
 
