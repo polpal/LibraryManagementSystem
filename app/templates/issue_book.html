@@ -4,15 +4,13 @@
     <h2>Issue Book</h2>
 
     <form method="POST">
-         {{ form.hidden_tag() }}
+        {{ form.hidden_tag() }}
         <div class="mb-3">
-            {{ form.member_id.label(class="form-label") }}
-            {{ form.member_id(class="form-select") }}
+            {{ form.member_id.label(class="form-label") }} {{ form.member_id(class="form-select") }}
         </div>
 
         <div class="mb-3">
-            {{ form.book_id.label(class="form-label") }}
-            {{ form.book_id(class="form-select") }}
+            {{ form.book_id.label(class="form-label") }} {{ form.book_id(class="form-select") }}
         </div>
         <div class="mb-3">
             <label for="issue_date" class="form-label"> Issue Date </label>
@@ -28,8 +26,9 @@
         </div>
 
         <div class="mb-3">
-            {{ form.due_date.label(class="form-label") }}
-            {{ form.due_date(class="form-control") }}
+            <label for="due_date" class="form-label"> Due Date </label>
+
+            <input type="date" class="form-control" id="due_date" value="{{ due_date }}" readonly />
         </div>
 
         {{ form.submit(class="btn btn-primary") }}

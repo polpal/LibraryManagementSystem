@@ -1,9 +1,11 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 from app.forms import IssueBookForm
+from app.forms.reissue_form import ReissueForm
 
 from ..models import Book, Member, Transaction
+from app.services.settings_service import get_int_setting
 from ..services.transaction_service import (
     issue_book_to_member,
     return_book,
@@ -61,9 +63,7 @@ def issue_book():
 
     if form.validate_on_submit():
 
-        success, message = issue_book_to_member(
-            form.member_id.data, form.book_id.data, form.due_date.data
-        )
+        success, message = issue_book_to_member(form.member_id.data, form.book_id.data)
 
         if success:
             flash(message, "success")
@@ -71,8 +71,12 @@ def issue_book():
             return redirect(url_for("transaction.issued_books"))
 
         flash(message, "danger")
+    loan_days = get_int_setting("LOAN_DAYS", 30)
 
-    return render_template("issue_book.html", form=form, today=date.today())
+    due_date = date.today() + timedelta(days=loan_days)
+    return render_template(
+        "issue_book.html", form=form, today=date.today(), due_date=due_date
+    )
 
 
 @transaction_bp.route("/return/<int:transaction_no>")
@@ -97,28 +101,33 @@ def reissue_book_route(transaction_no):
         return "Transaction not found.", 404
 
     if transaction.return_date is not None:
-        flash("Only active issued books can be reissued.", "danger")
+        flash("Only active issued books can be renewed.", "danger")
         return redirect(url_for("transaction.issued_books"))
 
-    if request.method == "GET":
+    form = ReissueForm()
 
-        today = date.today()
+    if form.validate_on_submit():
 
-        return render_template(
-            "reissue_book.html", transaction=transaction, today=today
-        )
+        success, message = reissue_book(transaction_no)
 
-    due_date = request.form.get("due_date")
-    print(f"Received due_date: {due_date}")  # Debugging line
+        if not success:
+            flash(message, "danger")
+            return redirect(url_for("transaction.issued_books"))
 
-    if not due_date:
-        return "Please select a due date.", 400
+        flash(message, "success")
 
-    due_date = datetime.strptime(due_date, "%Y-%m-%d").date()
+        return redirect(url_for("transaction.issued_books"))
 
-    success, message = reissue_book(transaction_no, due_date)
+    today = date.today()
 
-    if not success:
-        return message, 400
+    loan_days = get_int_setting("REISSUE_LOAN_DAYS", 30)
 
-    return redirect(url_for("transaction.issued_books"))
+    due_date = today + timedelta(days=loan_days)
+
+    return render_template(
+        "reissue_book.html",
+        transaction=transaction,
+        form=form,
+        today=today,
+        due_date=due_date,
+    )

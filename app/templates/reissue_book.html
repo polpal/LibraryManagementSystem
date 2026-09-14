@@ -1,62 +1,72 @@
 {% extends "base.html" %} {% block title %} Reissue Book {% endblock %} {% block content %}
 
-<div class="container">
-    <h2 class="mb-4">Reissue Book</h2>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Reissue Book</h2>
+</div>
 
-    <div class="card">
-        <div class="card-body">
-            <div class="mb-3">
-                <strong>Member:</strong>
-                {{ transaction.member.name }}
-            </div>
+<div class="table-responsive">
+    <form method="POST">
+        {{ form.hidden_tag() }}
 
-            <div class="mb-3">
-                <strong>Member No:</strong>
-                {{ transaction.member.member_no }}
-            </div>
+        <table class="library-table table table-bordered table-striped table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>Field</th>
+                    <th>Details</th>
+                </tr>
+            </thead>
 
-            <div class="mb-3">
-                <strong>Book:</strong>
-                {{ transaction.book.book_name }}
-            </div>
+            <tbody>
+                <tr>
+                    <td>Transaction No.</td>
+                    <td>{{ transaction.transaction_no }}</td>
+                </tr>
 
-            <div class="mb-3">
-                <strong>Accession No:</strong>
-                {{ transaction.book.accession_no }}
-            </div>
+                <tr>
+                    <td>Member No.</td>
+                    <td>{{ transaction.member.member_no }}</td>
+                </tr>
 
-            <div class="mb-3">
-                <strong>Previous Issue Date:</strong>
-                {{ transaction.issue_date.strftime("%d-%m-%Y") }}
-            </div>
+                <tr>
+                    <td>Member Name</td>
+                    <td>{{ transaction.member.name }}</td>
+                </tr>
 
-            <div class="mb-3">
-                <strong>Previous Return Date:</strong>
-                {{ transaction.return_date.strftime("%d-%m-%Y") }}
-            </div>
+                <tr>
+                    <td>Accession No.</td>
+                    <td>{{ transaction.book.accession_no }}</td>
+                </tr>
 
-            <hr />
+                <tr>
+                    <td>Book Name</td>
+                    <td>{{ transaction.book.book_name }}</td>
+                </tr>
 
-            <form method="POST">
-                <div class="mb-3">
-                    <label for="due_date" class="form-label"> New Due Date </label>
+                <tr>
+                    <td>Previous Issue Date</td>
+                    <td>{{ transaction.issue_date }}</td>
+                </tr>
 
-                    <input
-                        type="date"
-                        id="due_date"
-                        name="due_date"
-                        class="form-control"
-                        min="{{ today.strftime('%Y-%m-%d') }}"
-                        required
-                    />
-                </div>
+                <tr>
+                    <td>Renewal Date</td>
+                    <td>{{ today }}</td>
+                </tr>
 
-                <button type="submit" class="btn btn-primary">Reissue Book</button>
+                <tr>
+                    <td>New Due Date</td>
+                    <td>{{ due_date }}</td>
+                </tr>
+            </tbody>
+        </table>
 
-                <a href="{{ url_for('main.issued_books') }}" class="btn btn-secondary"> Cancel </a>
-            </form>
+        <div class="text-center mt-3">
+            <button type="submit" class="btn btn-warning me-2">Reissue</button>
+
+            <a href="{{ url_for('transaction.issued_books') }}" class="btn btn-secondary">
+                Cancel
+            </a>
         </div>
-    </div>
+    </form>
 </div>
 
 {% endblock %}
