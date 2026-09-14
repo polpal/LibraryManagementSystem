@@ -41,18 +41,19 @@
                 <td>{{ transaction.due_date }}</td>
 
                 <td>
+                    {% if not transaction.return_date %}
                     <a
                         href="{{ url_for(
                                 'transaction.reissue_book_route',
                                 transaction_no=transaction.transaction_no
                                  ) }}"
                         class="btn btn-sm btn-warning"
-                     >
+                    >
                         Reissue
                     </a>
-
+                    {% endif %}
                     <a
-                         href="{{ url_for(
+                        href="{{ url_for(
                                  'transaction.return_book_route',
                                     transaction_no=transaction.transaction_no
                                     ) }}"
@@ -60,7 +61,7 @@
                         onclick="return confirm('Are you sure you want to return this book?');"
                     >
                         Return
-                     </a>
+                    </a>
                 </td>
             </tr>
             {% endfor %}

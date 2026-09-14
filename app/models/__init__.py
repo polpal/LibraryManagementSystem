@@ -10,3 +10,4 @@ from .admin import Admin
 from .book_category import BookCategory
 from .menu import Menu
 from .role_menu import RoleMenu
+from .system_setting import SystemSetting
