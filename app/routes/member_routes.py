@@ -1,12 +1,17 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, abort
 from flask_login import login_required, current_user
+import secrets
+import string
 
+from app.models import member
+from app.models import user
 from app.models.user import User
 from app.utils.decorators import role_required
 
 from ..models import db, Member, Transaction
 from ..forms.member_form import MemberForm
 from app.utils.logger import logger
+from app.utils.email import send_member_welcome_email
 
 member_bp = Blueprint("member", __name__)
 
@@ -54,15 +59,19 @@ def add_member():
 
         try:
             # Create User account for the Member
+            characters = string.ascii_letters + string.digits + "!@#$%"
+            temporary_password = "".join(secrets.choice(characters) for _ in range(12))
+
             user = User(
                 username=next_member_no,
                 role="Member",
                 status=form.status.data,
                 email=form.email.data.strip().lower(),
                 phone=form.phone.data.strip(),
+                must_change_password=True,
             )
 
-            user.set_password("Temp@123")
+            user.set_password(temporary_password)
 
             db.session.add(user)
 
@@ -94,7 +103,28 @@ def add_member():
                 f"user_id={user.id}"
             )
 
-            flash("Member and login account created successfully.", "success")
+            # Send welcome email separately
+            try:
+                send_member_welcome_email(member, temporary_password)
+
+                logger.info(f"Welcome email sent successfully to {member.email}")
+
+                flash(
+                    "Member and login account created successfully. "
+                    "Welcome email sent.",
+                    "success",
+                )
+
+            except Exception:
+                logger.exception(
+                    f"Member created, but welcome email failed for {member.email}"
+                )
+
+                flash(
+                    "Member and login account created successfully, "
+                    "but the welcome email could not be sent.",
+                    "warning",
+                )
 
         except Exception:
             db.session.rollback()
@@ -152,10 +182,26 @@ def delete_member(member_id):
         flash("This member has transaction history and cannot be deleted.", "danger")
         return redirect(url_for("member.members"))
 
-    db.session.delete(member)
-    db.session.commit()
+    user = member.user
 
-    flash("Member deleted successfully.", "success")
+    try:
+        # Delete Member
+        db.session.delete(member)
+
+        # Delete linked User account
+        if user:
+            db.session.delete(user)
+
+        db.session.commit()
+
+        flash("Member and login account deleted successfully.", "success")
+
+    except Exception:
+        db.session.rollback()
+
+        logger.exception(f"Error deleting member {member.member_no}")
+
+        flash("Unable to delete member.", "danger")
 
     return redirect(url_for("member.members"))
 
