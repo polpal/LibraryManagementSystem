@@ -35,6 +35,11 @@ def send_reset_email(user):
 
 def send_member_welcome_email(member, temporary_password):
 
+    msg = Message(
+        subject="Welcome to Railway Library",
+        recipients=[member.email],
+    )
+
     msg.body = f"""
 Hello {member.name},
 
@@ -65,3 +70,5 @@ Please do not share your password with anyone.
 Regards,
 Railway Library
 """
+
+    mail.send(msg)
