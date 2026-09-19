@@ -1,7 +1,6 @@
 from flask import Blueprint, render_template, redirect, url_for, flash
 
-from flask_login import login_user, logout_user, login_required
-
+from flask_login import login_user, logout_user, login_required, current_user
 from ..forms.login_form import LoginForm
 from ..models import User
 from werkzeug.security import check_password_hash
@@ -42,7 +41,7 @@ def login():
 
             if user.must_change_password:
                 flash("You must change your password before continuing.", "warning")
-                return redirect(url_for("auth.forgot_password"))
+                return redirect(url_for("auth.change_password"))
 
             flash("Login successful", "success")
 
@@ -107,6 +106,28 @@ def reset_password(token):
         flash("Password reset successful. Please login.", "success")
 
         return redirect(url_for("auth.login"))
+
+    return render_template("auth/reset_password.html", form=form)
+
+
+@auth_bp.route("/change-password", methods=["GET", "POST"])
+@login_required
+def change_password():
+
+    form = ResetPasswordForm()
+
+    if form.validate_on_submit():
+
+        current_user.set_password(form.password.data)
+        current_user.must_change_password = False
+
+        from ..models import db
+
+        db.session.commit()
+
+        flash("Password changed successfully.", "success")
+
+        return redirect(url_for("dashboard.dashboard"))
 
     return render_template("auth/reset_password.html", form=form)
 
