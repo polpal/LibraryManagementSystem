@@ -63,15 +63,16 @@ def forgot_password():
 
         print("Form validated")
 
-        user = User.query.filter_by(email=form.email.data).first()
+        user = User.query.filter_by(username=form.username.data,email=form.email.data).first()
 
+        print("Username entered:", form.username.data)
         print("Email entered:", form.email.data)
 
         if user:
             print("User found:", user.email)
             send_reset_email(user)
 
-        flash("If the email exists, a reset link has been sent.", "info")
+        flash("If the account details are valid, a reset link has been sent.", "info")
 
         return redirect(url_for("auth.login"))
 
