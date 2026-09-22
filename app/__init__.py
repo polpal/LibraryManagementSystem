@@ -6,12 +6,14 @@ from flask_wtf import CSRFProtect
 from app.utils.logger import logger
 from flask_login import LoginManager, current_user
 from flask_migrate import Migrate
+
 csrf = CSRFProtect()
 login_manager = LoginManager()
 from .models import User
 from .routes.auth_routes import auth_bp
 from flask import session
 from .extensions import mail
+
 migrate = Migrate()
 
 
@@ -24,9 +26,8 @@ def create_app():
 
     app = Flask(__name__)
     app.config.from_object(Config)
-    logger.info(
-        "Application started"
-    )
+    app.config["TEMPLATES_AUTO_RELOAD"] = True
+    logger.info("Application started")
 
     db.init_app(app)
     migrate.init_app(app, db)
@@ -58,7 +59,7 @@ def create_app():
 
     @app.after_request
     def prevent_browser_cache(response):
-         if current_user.is_authenticated:
+        if current_user.is_authenticated:
 
             response.headers["Cache-Control"] = (
                 "no-store, no-cache, must-revalidate, max-age=0"
@@ -66,25 +67,21 @@ def create_app():
             response.headers["Pragma"] = "no-cache"
             response.headers["Expires"] = "0"
 
-         return response
-     
+        return response
+
     @app.before_request
     def make_session_permanent():
 
         session.permanent = True
-        
+
     @app.context_processor
     def inject_user_menus():
 
         if current_user.is_authenticated:
 
             menus = (
-                Menu.query
-                .join(RoleMenu, Menu.id == RoleMenu.menu_id)
-                .filter(
-                    RoleMenu.role_name == current_user.role,
-                    Menu.is_active == True
-                )
+                Menu.query.join(RoleMenu, Menu.id == RoleMenu.menu_id)
+                .filter(RoleMenu.role_name == current_user.role, Menu.is_active == True)
                 .order_by(Menu.display_order)
                 .all()
             )
@@ -92,8 +89,6 @@ def create_app():
         else:
             menus = []
 
-        return {
-            "user_menus": menus
-        }
+        return {"user_menus": menus}
 
     return app

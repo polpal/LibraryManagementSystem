@@ -23,3 +23,4 @@ class Config:
     MAIL_PASSWORD = os.getenv("MAIL_PASSWORD")
 
     MAIL_DEFAULT_SENDER = os.getenv("MAIL_DEFAULT_SENDER")
+    APP_BASE_URL = os.getenv("APP_BASE_URL")

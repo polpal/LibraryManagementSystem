@@ -1,14 +1,15 @@
 from flask_mail import Message
 
 from app.extensions import mail
-from flask import current_app
+from flask import current_app, url_for
 
 
 def send_reset_email(user):
 
     token = user.get_reset_token()
 
-    reset_url = f"http://127.0.0.1:5000" f"/reset-password/{token}"
+    reset_path = url_for("auth.reset_password", token=token)
+    reset_url = f"{current_app.config['APP_BASE_URL']}{reset_path}"
 
     msg = Message(subject="Password Reset Request", recipients=[user.email])
 
