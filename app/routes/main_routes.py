@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request
+from flask import Blueprint, render_template
 
 from app.models import Book, Member, Transaction
 
@@ -20,18 +20,6 @@ def index():
         total_members=total_members,
         issued_books=issued_books,
     )
-
-
-@main_bp.route("/books-collection")
-def books_collection():
-
-    page = request.args.get("page", 1, type=int)
-
-    books = Book.query.order_by(Book.book_name).paginate(
-        page=page, per_page=10, error_out=False
-    )
-
-    return render_template("public_books.html", books=books)
 
 
 @main_bp.app_errorhandler(403)
