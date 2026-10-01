@@ -42,3 +42,8 @@ def public_books():
         books=books,
         search=search,
     )
+
+
+@public_bp.route("/gallery")
+def gallery():
+    return render_template("gallery.html")

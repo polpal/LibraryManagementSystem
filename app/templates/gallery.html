@@ -1,0 +1,68 @@
+{% extends "base.html" %} {% block title %}Photo Gallery{% endblock %} {% block page_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/gallery.css') }}" />
+{% endblock %} {% block page_js %}
+<script src="{{ url_for('static', filename='js/gallery.js') }}"></script>
+{% endblock %} {% block content %}
+
+<div class="container py-4">
+    <div class="text-center mb-4">
+        <h2 class="fw-bold">Photo Gallery</h2>
+
+        <p class="text-muted">A glimpse of our library and its learning environment.</p>
+    </div>
+
+    <div class="row g-4">
+        {% for image in [ "LIB1.jpg", "LIB2.jpg", "LIB3.jpg", "LIB4.jpg", "LIB5.jpg", "LIB6.jpg",
+        "LIB7.jpg", "LIB8.jpg" ] %}
+
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+            <div class="card gallery-card h-100 shadow-sm">
+                <img
+                    src="{{ url_for('static', filename='images/gallery/' ~ image) }}"
+                    class="gallery-image"
+                    alt="Library photo"
+                />
+            </div>
+        </div>
+
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Gallery Modal -->
+
+<!-- Gallery Modal -->
+
+<div class="modal fade" id="galleryModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content">
+            <div class="modal-body text-center position-relative p-2">
+                <!-- Previous Button -->
+
+                <button
+                    type="button"
+                    class="btn btn-dark position-absolute top-50 start-0 translate-middle-y ms-2"
+                    id="galleryPrevious"
+                >
+                    &#10094;
+                </button>
+
+                <!-- Image -->
+
+                <img id="galleryModalImage" src="" class="img-fluid rounded" alt="Library photo" />
+
+                <!-- Next Button -->
+
+                <button
+                    type="button"
+                    class="btn btn-dark position-absolute top-50 end-0 translate-middle-y me-2"
+                    id="galleryNext"
+                >
+                    &#10095;
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
