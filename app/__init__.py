@@ -46,6 +46,7 @@ def create_app():
     from .routes.profile_routes import profile_bp
     from .routes.book_category_routes import book_category_bp
     from .routes.public_routes import public_bp
+    from .routes.settings_routes import settings_bp
 
     app.register_blueprint(main_bp)
     app.register_blueprint(member_bp)
@@ -58,6 +59,7 @@ def create_app():
     app.register_blueprint(user_bp)
     app.register_blueprint(profile_bp)
     app.register_blueprint(public_bp)
+    app.register_blueprint(settings_bp)
 
     @app.after_request
     def prevent_browser_cache(response):
