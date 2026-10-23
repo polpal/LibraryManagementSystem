@@ -169,6 +169,23 @@ def reissue_book(transaction_no):
 
         return False, "Book is not currently issued."
 
+    max_reissue_count = get_int_setting("MAX_REISSUE_COUNT", 2)
+
+    reissue_count = Transaction.query.filter_by(
+        member_id=member.id,
+        book_id=book.id,
+        transaction_type="Reissue",
+    ).count()
+
+    if reissue_count >= max_reissue_count:
+        logger.warning(
+            f"Reissue failed. Maximum reissue count reached. "
+            f"member_no={member.member_no}, "
+            f"accession_no={book.accession_no}, "
+            f"reissue_count={reissue_count}"
+        )
+        return False, "Maximum reissue limit reached."
+
     last_transaction = Transaction.query.order_by(
         Transaction.transaction_no.desc()
     ).first()
