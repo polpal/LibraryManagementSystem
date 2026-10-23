@@ -64,6 +64,14 @@ with app.app_context():
             "roles": ["Admin", "Librarian"],
         },
         {
+            "name": "Settings",
+            "endpoint": "settings.settings_page",
+            "active_prefix": "settings",
+            "icon": "bi-gear",
+            "order": 8,
+            "roles": ["Admin", "Librarian"],
+        },
+        {
             "name": "My Books",
             "endpoint": "member.my_books",
             "active_prefix": "member.my_books",

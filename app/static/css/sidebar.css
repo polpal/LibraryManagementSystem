@@ -1,0 +1,94 @@
+
+/* ============================
+   Application Sidebar Layout
+   ============================ */
+
+.app-layout {
+    min-height: calc(100vh - 140px);
+    background-color: #f5f7fb;
+}
+
+.app-sidebar {
+    width: 240px;
+    min-width: 240px;
+    background: #172554;
+    color: #ffffff;
+    padding: 24px 14px;
+    min-height: calc(100vh - 140px);
+}
+
+.sidebar-heading {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    color: #a5b4fc;
+    padding: 0 12px;
+    margin-bottom: 20px;
+}
+
+.app-sidebar .nav-link {
+    display: flex;
+    align-items: center;
+    color: #dbeafe;
+    padding: 11px 12px;
+    margin-bottom: 5px;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    text-decoration: none;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.app-sidebar .nav-link:hover {
+    background-color: #263b70;
+    color: #ffffff;
+}
+
+.app-sidebar .nav-link.active {
+    background-color: #3b82f6;
+    color: #ffffff;
+    font-weight: 600;
+}
+
+.app-sidebar .nav-link i {
+    font-size: 1.1rem;
+    width: 22px;
+    text-align: center;
+}
+
+.app-content {
+    min-width: 0;
+    padding: 24px;
+}
+
+/* Responsive layout for mobile and small screens */
+@media (max-width: 767.98px) {
+    .app-layout {
+        flex-direction: column;
+    }
+
+    .app-sidebar {
+        width: 100%;
+        min-width: 0;
+        min-height: auto;
+        padding: 16px;
+    }
+
+    .sidebar-heading {
+        margin-bottom: 10px;
+    }
+
+    .app-sidebar .nav {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 5px;
+    }
+
+    .app-sidebar .nav-link {
+        margin-bottom: 0;
+        height: 100%;
+    }
+
+    .app-content {
+        padding: 16px;
+    }
+}

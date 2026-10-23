@@ -21,6 +21,9 @@
 
         <!-- Our CSS -->
         <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+
+        <!-- Our SIDE BAR CSS -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/sidebar.css') }}">
         {% block page_css %} {% endblock %}
     </head>
 
@@ -29,74 +32,63 @@
          Navigation Bar
     ========================== -->
         {% if not hide_navbar %}
-        <nav class="navbar navbar-expand-lg navbar-dark navbar-dark custom-navbar">
-            <div class="container">
-                <!-- Brand -->
-                <a
-                    class="navbar-brand d-flex align-items-center"
-                    href="{{ url_for('main.index') }}"
-                >
-                    <img
-                        src="{{ url_for('static', filename='images/rail_logo_n.png') }}"
-                        alt="Library Logo"
-                        width="40"
-                        height="40"
-                        class="me-2"
-                    />
+        
+<nav class="navbar navbar-expand-lg navbar-dark custom-navbar">
+    <div class="container">
 
-                    <span> Library Management System </span>
-                </a>
+        <!-- Brand -->
+        <a
+            class="navbar-brand d-flex align-items-center"
+            href="{{ url_for('main.index') }}"
+        >
+            <img
+                src="{{ url_for('static', filename='images/rail_logo_n.png') }}"
+                alt="Library Logo"
+                width="40"
+                height="40"
+                class="me-2"
+            />
+            <span>Library Management System</span>
+        </a>
 
-                <!-- Mobile Button -->
+        <!-- Mobile Button -->
+        <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#mainNavbar"
+            aria-controls="mainNavbar"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+        >
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-                <button
-                    class="navbar-toggler"
-                    type="button"
-                    data-bs-toggle="collapse"
-                    data-bs-target="#mainNavbar"
-                    aria-controls="mainNavbar"
-                    aria-expanded="false"
-                    aria-label="Toggle navigation"
-                >
-                    <span class="navbar-toggler-icon"></span>
-                </button>
+        <!-- Navigation -->
+        <div class="collapse navbar-collapse" id="mainNavbar">
 
-                <!-- Navigation -->
+            <ul class="navbar-nav ms-auto align-items-lg-center">
 
-                <div class="collapse navbar-collapse" id="mainNavbar">
-                    <ul class="navbar-nav ms-auto align-items-lg-center">
-                        {% if current_user.is_authenticated %} {% for menu in user_menus %}
+                {% if current_user.is_authenticated %}
 
-                        <li class="nav-item">
-                            <a
-                                class="nav-link px-3 {% if request.endpoint and request.endpoint.startswith(menu.active_prefix) %}active{% endif %}"
-                                href="{{ url_for(menu.endpoint) }}"
-                            >
-                                {% if menu.icon %}
-                                <i class="bi {{ menu.icon }}"></i>
-                                {% endif %} {{ menu.menu_name }}
-                            </a>
-                        </li>
+                    <!-- User Menu -->
+                    <li class="nav-item dropdown ms-lg-2">
 
-                        {% endfor %}
+                        <a
+                            class="nav-link dropdown-toggle d-flex align-items-center gap-2"
+                            href="#"
+                            role="button"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                        >
 
-                        <!-- User Menu -->
-
-                        <li class="nav-item dropdown ms-lg-2">
-                            <a
-                                class="nav-link dropdown-toggle d-flex align-items-center gap-2"
-                                href="#"
-                                role="button"
-                                data-bs-toggle="dropdown"
-                                aria-expanded="false"
-                            >
-                                {% if current_user.profile_picture %}
+                            {% if current_user.profile_picture %}
 
                                 <img
                                     src="{{ url_for(
-                    'static',
-                    filename='uploads/profile_pics/' + current_user.profile_picture
-                ) }}"
+                                        'static',
+                                        filename='uploads/profile_pics/' + current_user.profile_picture
+                                    ) }}"
                                     alt="Profile"
                                     class="rounded-circle"
                                     width="32"
@@ -104,7 +96,7 @@
                                     style="object-fit: cover"
                                 />
 
-                                {% else %}
+                            {% else %}
 
                                 <span
                                     class="rounded-circle bg-secondary text-white d-inline-flex align-items-center justify-content-center"
@@ -113,84 +105,122 @@
                                     {{ current_user.username[0]|upper }}
                                 </span>
 
-                                {% endif %}
+                            {% endif %}
 
-                                <span>{{ current_user.username }}</span>
+                            <span>{{ current_user.username }}</span>
+                        </a>
+
+                        <ul class="dropdown-menu dropdown-menu-end shadow">
+
+                            <li>
+                                <a
+                                    class="dropdown-item"
+                                    href="{{ url_for('profile.my_profile') }}"
+                                >
+                                    My Profile
+                                </a>
+                            </li>
+
+                            <li>
+                                <a
+                                    class="dropdown-item"
+                                    href="{{ url_for('profile.change_password') }}"
+                                >
+                                    Change Password
+                                </a>
+                            </li>
+
+                            <li>
+                                <hr class="dropdown-divider" />
+                            </li>
+
+                            <li>
+                                <a
+                                    class="dropdown-item text-danger"
+                                    href="{{ url_for('auth.logout') }}"
+                                >
+                                    Logout
+                                </a>
+                            </li>
+
+                        </ul>
+                    </li>
+
+                {% else %}
+
+                    <!-- Public Navigation -->
+                    <li class="nav-item">
+                        
+<a
+    class="nav-link {% if request.endpoint == menu.endpoint or (menu.active_prefix and request.endpoint and request.endpoint.startswith(menu.active_prefix + '.')) %}active{% endif %}"
+    href="{{ url_for(menu.endpoint) }}"
+>
+
+                            Home
+                        </a>
+                    </li>
+
+                    {% if request.endpoint == 'main.index' %}
+
+                        <li class="nav-item">
+                            <a class="nav-link px-3" href="#about">
+                                About Us
                             </a>
-
-                            <ul class="dropdown-menu dropdown-menu-end shadow">
-                                <li>
-                                    <a
-                                        class="dropdown-item"
-                                        href="{{ url_for('profile.my_profile') }}"
-                                    >
-                                        My Profile
-                                    </a>
-                                </li>
-
-                                <li>
-                                    <a
-                                        class="dropdown-item"
-                                        href="{{ url_for('profile.change_password') }}"
-                                    >
-                                        Change Password
-                                    </a>
-                                </li>
-
-                                <li>
-                                    <hr class="dropdown-divider" />
-                                </li>
-
-                                <li>
-                                    <a
-                                        class="dropdown-item text-danger"
-                                        href="{{ url_for('auth.logout') }}"
-                                    >
-                                        Logout
-                                    </a>
-                                </li>
-                            </ul>
                         </li>
 
-                        {% else %}
-                        <!-- Public Navigation -->
-
                         <li class="nav-item">
-                            <a
-                                class="nav-link px-3 {% if request.endpoint == 'main.index' %} active {% endif %}"
-                                href="{{ url_for('main.index') }}"
-                            >
-                                Home
+                            <a class="nav-link px-3" href="#contact">
+                                Contact Us
                             </a>
-                        </li>
-
-                        {% if request.endpoint == 'main.index' %}
-
-                        <li class="nav-item">
-                            <a class="nav-link px-3" href="#about"> About Us </a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link px-3" href="#contact"> Contact Us </a>
                         </li>
 
                         <li class="nav-item ms-lg-2">
-                            <a class="btn btn-primary px-4" href="{{ url_for('auth.login') }}">
+                            <a
+                                class="btn btn-primary px-4"
+                                href="{{ url_for('auth.login') }}"
+                            >
                                 Login
                             </a>
                         </li>
 
-                        {% endif %} {% endif %}
-                    </ul>
-                </div>
-            </div>
-        </nav>
+                    {% endif %}
+
+                {% endif %}
+
+            </ul>
+        </div>
+    </div>
+</nav>
+
         {% else %} {% block login_navbar %}{% endblock %} {% endif %}
         <!-- =========================
          Main Content
     ========================== -->
 
-        <main class="container mt-4 flex-grow-1">
+{% if current_user.is_authenticated %}
+<main class="flex-grow-1">
+        <div class="app-layout d-flex">
+        <aside class="app-sidebar">
+            <div class="sidebar-heading">LIBRARY MENU</div>
+            <ul class="nav flex-column">
+                {% for menu in user_menus %}
+                <li class="nav-item">
+                    <a class="nav-link {% if request.endpoint and request.endpoint.startswith(menu.active_prefix) %}active{% endif %}"
+                       href="{{ url_for(menu.endpoint) }}">
+                        {% if menu.icon %}
+                        <i class="bi {{ menu.icon }} me-2"></i>
+                        {% endif %}
+                        {{ menu.menu_name }}
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+        </aside>
+
+        <section class="app-content flex-grow-1">
+{% else %}
+<main class="container mt-4 flex-grow-1">
+{% endif %}
             {% with messages = get_flashed_messages(with_categories=true) %} {% if messages %} {%
             for category, message in messages %}
             <div
@@ -206,7 +236,13 @@
                 ></button>
             </div>
             {% endfor %} {% endif %} {% endwith %} {% block content %} {% endblock %}
-        </main>
+        {% if current_user.is_authenticated %}
+        </section>
+    </div>
+</main>
+{% else %}
+</main>
+{% endif %}
 
         <!-- =========================
          Footer
