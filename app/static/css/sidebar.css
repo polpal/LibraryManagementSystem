@@ -3,9 +3,10 @@
    Application Sidebar Layout
    ============================ */
 
+
 .app-layout {
-    min-height: calc(100vh - 140px);
     background-color: #f5f7fb;
+    align-items: stretch;
 }
 
 .app-sidebar {
