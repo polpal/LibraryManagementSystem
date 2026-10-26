@@ -150,15 +150,13 @@
 
                     <!-- Public Navigation -->
                     <li class="nav-item">
-                        
-<a
-    class="nav-link {% if request.endpoint == menu.endpoint or (menu.active_prefix and request.endpoint and request.endpoint.startswith(menu.active_prefix + '.')) %}active{% endif %}"
-    href="{{ url_for(menu.endpoint) }}"
->
-
-                            Home
-                        </a>
-                    </li>
+    <a
+        class="nav-link {% if request.endpoint == 'main.index' %}active{% endif %}"
+        href="{{ url_for('main.index') }}"
+    >
+        Home
+    </a>
+</li>
 
                     {% if request.endpoint == 'main.index' %}
 
