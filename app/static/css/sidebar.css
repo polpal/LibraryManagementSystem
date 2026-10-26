@@ -9,14 +9,20 @@
     align-items: stretch;
 }
 
+
 .app-sidebar {
     width: 240px;
     min-width: 240px;
     background: #172554;
     color: #ffffff;
     padding: 24px 14px;
-    min-height: calc(100vh - 140px);
+    align-self: flex-start;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
 }
+
 
 .sidebar-heading {
     font-size: 0.75rem;
@@ -68,10 +74,13 @@
     }
 
     .app-sidebar {
-        width: 100%;
-        min-width: 0;
-        min-height: auto;
-        padding: 16px;
+    width: 100%;
+    min-width: 0;
+    min-height: auto;
+    height: auto;
+    position: static;
+    overflow-y: visible;
+    padding: 16px;
     }
 
     .sidebar-heading {
