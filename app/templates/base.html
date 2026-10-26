@@ -203,7 +203,7 @@
             <ul class="nav flex-column">
                 {% for menu in user_menus %}
                 <li class="nav-item">
-                    <a class="nav-link {% if request.endpoint and request.endpoint.startswith(menu.active_prefix) %}active{% endif %}"
+                    <a class="nav-link {% if request.endpoint == menu.active_prefix or (request.endpoint and request.endpoint.startswith(menu.active_prefix + '.')) %}active{% endif %}"
                        href="{{ url_for(menu.endpoint) }}">
                         {% if menu.icon %}
                         <i class="bi {{ menu.icon }} me-2"></i>
