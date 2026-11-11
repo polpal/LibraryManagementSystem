@@ -29,11 +29,15 @@
                     <td>
                         {% if transaction.return_date %}
 
-                        <span class="badge bg-success"> Returned </span>
+                        <span class="badge bg-success">Returned</span>
+
+                        {% elif transaction.due_date < today %}
+
+                        <span class="badge bg-danger">Overdue</span>
 
                         {% else %}
 
-                        <span class="badge bg-primary"> Issued </span>
+                        <span class="badge bg-primary">Issued</span>
 
                         {% endif %}
                     </td>

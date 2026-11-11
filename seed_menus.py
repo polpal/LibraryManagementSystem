@@ -72,6 +72,14 @@ with app.app_context():
             "roles": ["Admin", "Librarian"],
         },
         {
+            "name": "Reports",
+            "endpoint": "report.reports",
+            "active_prefix": "report",
+            "icon": "bi-file-earmark-bar-graph",
+            "order": 9,
+            "roles": ["Admin", "Librarian"],
+        },
+        {
             "name": "My Books",
             "endpoint": "member.my_books",
             "active_prefix": "member.my_books",

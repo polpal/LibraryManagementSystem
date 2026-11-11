@@ -1,0 +1,158 @@
+{% extends "base.html" %} {% block title %}Library Reports{% endblock %} {% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Library Reports</h2>
+</div>
+
+<!-- Report Summary Cards -->
+
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <div class="card border-primary shadow-sm h-100">
+            <div class="card-body">
+                <h6 class="text-muted">Currently Issued</h6>
+                <h2 class="text-primary mb-0">{{ summary.total_issued }}</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card border-danger shadow-sm h-100">
+            <div class="card-body">
+                <h6 class="text-muted">Overdue Books</h6>
+                <h2 class="text-danger mb-0">{{ summary.total_overdue }}</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card border-success shadow-sm h-100">
+            <div class="card-body">
+                <h6 class="text-muted">Books Issued Today</h6>
+                <h2 class="text-success mb-0">{{ summary.issued_today }}</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Report Filters -->
+
+<div class="card shadow-sm mb-4">
+    <div class="card-header bg-primary text-white">
+        <h5 class="mb-0">Report Selection</h5>
+    </div>
+
+    <div class="card-body">
+        <form method="GET" action="{{ url_for('report.reports') }}">
+            <div class="row g-3 align-items-end">
+                <div class="col-md-4">
+                    <label class="form-label">Select Report</label>
+
+                    <select name="report_type" class="form-select" required>
+                        <option value="issued" {% if report_type == "issued" %}selected{% endif %}>
+                            Currently Issued Books
+                        </option>
+
+                        <option value="overdue" {% if report_type == "overdue" %}selected{% endif %}>
+                            Overdue Books
+                        </option>
+
+                        <option value="returned" {% if report_type == "returned" %}selected{% endif %}>
+                            Returned Books
+                        </option>
+
+                        <option value="history" {% if report_type == "history" %}selected{% endif %}>
+                            Issue History
+                        </option>
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label">From Date</label>
+
+                    <input
+                        type="date"
+                        name="start_date"
+                        class="form-control"
+                        value="{{ start_date.isoformat() }}"
+                        required
+                    />
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label">To Date</label>
+
+                    <input
+                        type="date"
+                        name="end_date"
+                        class="form-control"
+                        value="{{ end_date.isoformat() }}"
+                        required
+                    />
+                </div>
+
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">Generate</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Selected Report -->
+
+<div class="card shadow-sm mb-4">
+    <div class="card-header bg-dark text-white">
+        <h5 class="mb-0">
+            {% if report_type == "issued" %} Currently Issued Books {% elif report_type == "overdue"
+            %} Overdue Books {% elif report_type == "returned" %} Returned Books {% else %} Issue
+            History {% endif %}
+        </h5>
+    </div>
+
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="library-table table table-bordered table-striped table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Transaction No.</th>
+                        <th>Accession No.</th>
+                        <th>Book Name</th>
+                        <th>Member No.</th>
+                        <th>Member Name</th>
+                        <th>Issue Date</th>
+                        <th>Due Date</th>
+                        <th>Return Date</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for transaction in report_data %}
+
+                    <tr>
+                        <td>{{ transaction.transaction_no }}</td>
+                        <td>{{ transaction.book.accession_no }}</td>
+                        <td>{{ transaction.book.book_name }}</td>
+                        <td>{{ transaction.member.member_no }}</td>
+                        <td>{{ transaction.member.name }}</td>
+                        <td>{{ transaction.issue_date }}</td>
+                        <td>{{ transaction.due_date }}</td>
+                        <td>{{ transaction.return_date or "-" }}</td>
+                    </tr>
+
+                    {% else %}
+
+                    <tr>
+                        <td colspan="8" class="text-center text-muted">
+                            No records found for the selected report and date range.
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

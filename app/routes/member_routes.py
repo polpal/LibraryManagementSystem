@@ -1,3 +1,4 @@
+from datetime import date
 from flask import Blueprint, render_template, redirect, url_for, flash, abort
 from flask_login import login_required, current_user
 import secrets
@@ -219,4 +220,6 @@ def my_books():
         .all()
     )
 
-    return render_template("my_books.html", transactions=transactions)
+    today = date.today()
+
+    return render_template("my_books.html", transactions=transactions, today=today)
