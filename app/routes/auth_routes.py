@@ -8,6 +8,18 @@ from ..forms.forgot_password_form import ForgotPasswordForm
 from ..forms.reset_password_form import ResetPasswordForm
 from ..utils.email import send_reset_email
 from flask import request
+from flask import session
+
+from ..forms.confirm_login_form import ConfirmLoginForm
+
+from ..utils.session_manager import (
+    generate_session_token,
+    activate_session,
+    invalidate_session,
+)
+import time
+
+from ..utils.session_manager import is_session_valid
 
 auth_bp = Blueprint("auth", __name__)
 
@@ -24,6 +36,7 @@ def login():
         if not user:
 
             flash("Invalid username", "danger")
+
         elif user.status != "Active":
 
             flash("Your account is inactive.", "danger")
@@ -33,14 +46,36 @@ def login():
             flash("Invalid password", "danger")
 
         else:
-            print("LOGIN SUCCESSFUL")
-            from flask import session
+
+            # Check whether this browser already owns the session.
+            if (
+                current_user.is_authenticated
+                and current_user.id == user.id
+                and is_session_valid(user, session.get("active_session_token"))
+            ):
+                return redirect(url_for("dashboard.dashboard"))
+
+            # An existing token requires confirmation.
+            if user.active_session_token:
+
+                session["pending_login_user_id"] = user.id
+                session["pending_login_created_at"] = time.time()
+
+                return redirect(url_for("auth.confirm_login"))
+
+            # No existing session: activate a new session.
+            token = generate_session_token()
+
+            activate_session(user, token)
 
             login_user(user)
             session.permanent = True
+            session["active_session_token"] = token
 
             if user.must_change_password:
+
                 flash("You must change your password before continuing.", "warning")
+
                 return redirect(url_for("auth.change_password"))
 
             flash("Login successful", "success")
@@ -63,7 +98,9 @@ def forgot_password():
 
         print("Form validated")
 
-        user = User.query.filter_by(username=form.username.data,email=form.email.data).first()
+        user = User.query.filter_by(
+            username=form.username.data, email=form.email.data
+        ).first()
 
         print("Username entered:", form.username.data)
         print("Email entered:", form.email.data)
@@ -142,3 +179,76 @@ def logout():
     flash("You have been logged out.", "success")
 
     return redirect(url_for("auth.login"))
+
+
+@auth_bp.route("/confirm-login", methods=["GET", "POST"])
+def confirm_login():
+
+    form = ConfirmLoginForm()
+
+    pending_user_id = session.get("pending_login_user_id")
+    pending_created_at = session.get("pending_login_created_at")
+
+    # Check whether a pending login exists.
+    if not pending_user_id or not pending_created_at:
+
+        flash("No pending login request found.", "warning")
+        return redirect(url_for("auth.login"))
+
+    # Pending confirmation expires after 5 minutes.
+    if time.time() - pending_created_at > 300:
+
+        session.pop("pending_login_user_id", None)
+        session.pop("pending_login_created_at", None)
+
+        flash("Login confirmation expired. Please login again.", "warning")
+        return redirect(url_for("auth.login"))
+
+    if form.validate_on_submit():
+
+        # User cancelled the takeover.
+        if form.cancel.data:
+
+            session.pop("pending_login_user_id", None)
+            session.pop("pending_login_created_at", None)
+
+            flash("Login cancelled. Existing session remains active.", "info")
+
+            return redirect(url_for("auth.login"))
+
+        if form.confirm.data:
+
+            user = User.query.get(pending_user_id)
+
+            if not user or user.status != "Active":
+
+                session.pop("pending_login_user_id", None)
+                session.pop("pending_login_created_at", None)
+
+                flash("Account is unavailable. Please login again.", "danger")
+                return redirect(url_for("auth.login"))
+
+            # Generate and activate the new session.
+            token = generate_session_token()
+
+            activate_session(user, token)
+
+            session.pop("pending_login_user_id", None)
+            session.pop("pending_login_created_at", None)
+
+            login_user(user)
+
+            session.permanent = True
+            session["active_session_token"] = token
+
+            if user.must_change_password:
+
+                flash("You must change your password before continuing.", "warning")
+
+                return redirect(url_for("auth.change_password"))
+
+            flash("Previous session terminated. Login successful.", "success")
+
+            return redirect(url_for("dashboard.dashboard"))
+
+    return render_template("auth/confirm_login.html", form=form)

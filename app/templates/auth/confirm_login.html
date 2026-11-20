@@ -1,0 +1,27 @@
+{% extends "base.html" %} {% set hide_navbar = true %} {% set hide_footer = true %} {% block title
+%} Confirm Login {% endblock %} {% block content %}
+
+<div class="login-wrapper">
+    <div class="login-card text-center">
+        <div class="mb-4">
+            <h2>Existing Login Detected</h2>
+
+            <p class="text-muted mt-3">
+                Your account is already logged in from another browser or device.
+            </p>
+
+            <p>Would you like to terminate the existing session and continue?</p>
+        </div>
+
+        <form method="POST">
+            {{ form.hidden_tag() }}
+
+            <div class="d-grid gap-3">
+                {{ form.confirm( class="btn btn-primary btn-lg" ) }} {{ form.cancel( class="btn
+                btn-outline-secondary btn-lg" ) }}
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

@@ -13,7 +13,7 @@ class Config:
         BASE_DIR, "instance", "library.db"
     )
     MAX_CONTENT_LENGTH = 2 * 1024 * 1024
-    PERMANENT_SESSION_LIFETIME = timedelta(minutes=2)
+    PERMANENT_SESSION_LIFETIME = timedelta(minutes=10)
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     MAIL_SERVER = os.getenv("MAIL_SERVER")
     MAIL_PORT = int(os.getenv("MAIL_PORT", 587))

@@ -26,6 +26,7 @@ class User(UserMixin, db.Model):
     profile_picture = db.Column(db.String(255), nullable=True)
 
     member = db.relationship("Member", back_populates="user", uselist=False)
+    active_session_token = db.Column(db.String(64), nullable=True)
 
     def __repr__(self):
 
