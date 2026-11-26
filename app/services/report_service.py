@@ -1,4 +1,10 @@
 from datetime import date
+import csv
+from io import StringIO
+from io import BytesIO
+
+from openpyxl import Workbook
+from openpyxl.styles import Font, PatternFill, Alignment
 
 from app.models import Transaction
 
@@ -100,3 +106,131 @@ def get_filtered_report(report_type, start_date, end_date):
         raise ValueError("Invalid report type.")
 
     return query.all()
+
+
+def generate_report_csv(report_data):
+    """Generate CSV content from filtered report transactions."""
+
+    output = StringIO()
+
+    writer = csv.writer(output)
+
+    # CSV column headings.
+    writer.writerow(
+        [
+            "Transaction No.",
+            "Accession No.",
+            "Book Name",
+            "Member No.",
+            "Member Name",
+            "Issue Date",
+            "Due Date",
+            "Return Date",
+        ]
+    )
+
+    if not report_data:
+
+        writer.writerow(["No data available for the selected report and date range."])
+
+    else:
+
+        for transaction in report_data:
+
+            writer.writerow(
+                [
+                    transaction.transaction_no,
+                    transaction.book.accession_no,
+                    transaction.book.book_name,
+                    transaction.member.member_no,
+                    transaction.member.name,
+                    transaction.issue_date,
+                    transaction.due_date,
+                    transaction.return_date or "",
+                ]
+            )
+
+    return output.getvalue()
+
+
+def generate_report_excel(report_data):
+    """Generate an Excel workbook from filtered report transactions."""
+
+    workbook = Workbook()
+
+    worksheet = workbook.active
+    worksheet.title = "Library Report"
+
+    # Report headings.
+    headers = [
+        "Transaction No.",
+        "Accession No.",
+        "Book Name",
+        "Member No.",
+        "Member Name",
+        "Issue Date",
+        "Due Date",
+        "Return Date",
+    ]
+
+    worksheet.append(headers)
+
+    # Format the heading row.
+    for cell in worksheet[1]:
+
+        cell.font = Font(bold=True, color="FFFFFF")
+
+        cell.fill = PatternFill(
+            fill_type="solid",
+            fgColor="1F4E78",
+        )
+
+        cell.alignment = Alignment(horizontal="center")
+
+    # Add report records.
+    if not report_data:
+
+        worksheet.append(["No data available for the selected report and date range."])
+
+    else:
+
+        for transaction in report_data:
+
+            worksheet.append(
+                [
+                    transaction.transaction_no,
+                    transaction.book.accession_no,
+                    transaction.book.book_name,
+                    transaction.member.member_no,
+                    transaction.member.name,
+                    transaction.issue_date,
+                    transaction.due_date,
+                    transaction.return_date or "",
+                ]
+            )
+
+    # Set column widths.
+    column_widths = [18, 18, 30, 18, 25, 15, 15, 15]
+
+    for index, width in enumerate(column_widths, start=1):
+
+        worksheet.column_dimensions[
+            worksheet.cell(row=1, column=index).column_letter
+        ].width = width
+
+    # Keep headings visible while scrolling.
+    worksheet.freeze_panes = "A2"
+
+    # Enable filtering when records exist.
+    if report_data:
+
+        worksheet.auto_filter.ref = worksheet.dimensions
+
+    # Save workbook in memory.
+    output = BytesIO()
+
+    workbook.save(output)
+
+    output.seek(0)
+
+    return output

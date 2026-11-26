@@ -38,8 +38,42 @@
 <!-- Report Filters -->
 
 <div class="card shadow-sm mb-4">
-    <div class="card-header bg-primary text-white">
-        <h5 class="mb-0">Report Selection</h5>
+    <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">
+            {% if report_type == "issued" %} Currently Issued Books {% elif report_type == "overdue"
+            %} Overdue Books {% elif report_type == "returned" %} Returned Books {% else %} Issue
+            History {% endif %}
+        </h5>
+
+        <div class="btn-group" role="group">
+
+    <!-- CSV Export -->
+    <a
+        href="{{ url_for(
+            'report.export_report_csv',
+            report_type=report_type,
+            start_date=start_date.isoformat(),
+            end_date=end_date.isoformat()
+        ) }}"
+        class="btn btn-success btn-sm"
+    >
+        <i class="bi bi-filetype-csv"></i> CSV
+    </a>
+
+    <!-- Excel Export -->
+    <a
+        href="{{ url_for(
+            'report.export_report_excel',
+            report_type=report_type,
+            start_date=start_date.isoformat(),
+            end_date=end_date.isoformat()
+        ) }}"
+        class="btn btn-primary btn-sm"
+    >
+        <i class="bi bi-file-earmark-excel"></i> Excel
+    </a>
+
+</div>
     </div>
 
     <div class="card-body">
@@ -49,19 +83,43 @@
                     <label class="form-label">Select Report</label>
 
                     <select name="report_type" class="form-select" required>
-                        <option value="issued" {% if report_type == "issued" %}selected{% endif %}>
+                        <option value="issued" {% if report_type=="issued" %}selected{% endif %}>
                             Currently Issued Books
                         </option>
 
-                        <option value="overdue" {% if report_type == "overdue" %}selected{% endif %}>
+                        <option
+                            value="overdue"
+                            {%
+                            if
+                            report_type=="overdue"
+                            %}selected{%
+                            endif
+                            %}
+                        >
                             Overdue Books
                         </option>
 
-                        <option value="returned" {% if report_type == "returned" %}selected{% endif %}>
+                        <option
+                            value="returned"
+                            {%
+                            if
+                            report_type == "returned"
+                            %}selected{%
+                            endif
+                            %}
+                        >
                             Returned Books
                         </option>
 
-                        <option value="history" {% if report_type == "history" %}selected{% endif %}>
+                        <option
+                            value="history"
+                            {%
+                            if
+                            report_type=="history"
+                            %}selected{%
+                            endif
+                            %}
+                        >
                             Issue History
                         </option>
                     </select>

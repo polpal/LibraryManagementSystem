@@ -1,7 +1,19 @@
 from datetime import date
 
-from flask import Blueprint, render_template, request, flash
+from flask import (
+    Blueprint,
+    render_template,
+    request,
+    flash,
+    Response,
+    redirect,
+    url_for,
+)
 from flask_login import login_required
+from flask import Response
+from app.services.report_service import generate_report_csv
+from flask import send_file
+from app.services.report_service import generate_report_excel
 
 from app.utils.decorators import role_required
 from app.services.report_service import (
@@ -76,4 +88,105 @@ def reports():
         report_type=report_type,
         start_date=start_date,
         end_date=end_date,
+    )
+
+
+@report_bp.route("/export/csv")
+@login_required
+@role_required("Admin", "Librarian")
+def export_report_csv():
+
+    today = date.today()
+
+    default_start_date = today.replace(day=1)
+
+    report_type = request.args.get("report_type", "issued")
+    start_date_value = request.args.get("start_date")
+    end_date_value = request.args.get("end_date")
+
+    try:
+
+        start_date = (
+            date.fromisoformat(start_date_value)
+            if start_date_value
+            else default_start_date
+        )
+
+        end_date = date.fromisoformat(end_date_value) if end_date_value else today
+
+        if start_date > end_date:
+            raise ValueError("Start date cannot be later than end date.")
+
+        report_data = get_filtered_report(
+            report_type,
+            start_date,
+            end_date,
+        )
+
+    except ValueError as error:
+
+        flash(str(error), "danger")
+
+        return redirect(url_for("report.reports"))
+
+    csv_data = generate_report_csv(report_data)
+
+    filename = f"{report_type}_report_{today.isoformat()}.csv"
+
+    return Response(
+        "\ufeff" + csv_data,
+        mimetype="text/csv",
+        headers={"Content-Disposition": f"attachment; filename={filename}"},
+    )
+
+
+@report_bp.route("/export/excel")
+@login_required
+@role_required("Admin", "Librarian")
+def export_report_excel():
+
+    today = date.today()
+
+    default_start_date = today.replace(day=1)
+
+    report_type = request.args.get("report_type", "issued")
+    start_date_value = request.args.get("start_date")
+    end_date_value = request.args.get("end_date")
+
+    try:
+
+        start_date = (
+            date.fromisoformat(start_date_value)
+            if start_date_value
+            else default_start_date
+        )
+
+        end_date = date.fromisoformat(end_date_value) if end_date_value else today
+
+        if start_date > end_date:
+            raise ValueError("Start date cannot be later than end date.")
+
+        report_data = get_filtered_report(
+            report_type,
+            start_date,
+            end_date,
+        )
+
+    except ValueError as error:
+
+        flash(str(error), "danger")
+
+        return redirect(url_for("report.reports"))
+
+    excel_file = generate_report_excel(report_data)
+
+    filename = f"{report_type}_report_{today.isoformat()}.xlsx"
+
+    return send_file(
+        excel_file,
+        as_attachment=True,
+        download_name=filename,
+        mimetype=(
+            "application/vnd.openxmlformats-officedocument." "spreadsheetml.sheet"
+        ),
     )
