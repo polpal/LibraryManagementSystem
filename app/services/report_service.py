@@ -2,11 +2,69 @@ from datetime import date
 import csv
 from io import StringIO
 from io import BytesIO
+from operator import index
 
 from openpyxl import Workbook
 from openpyxl.styles import Font, PatternFill, Alignment
 
 from app.models import Transaction
+from reportlab.lib import colors
+from reportlab.lib.pagesizes import A4, landscape
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib.units import mm
+from reportlab.platypus import (
+    SimpleDocTemplate,
+    Paragraph,
+    Spacer,
+    Table,
+    TableStyle,
+)
+from reportlab.lib.styles import ParagraphStyle
+from xml.sax.saxutils import escape
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
+from pathlib import Path
+from banglapdf import (
+    register_fonts,
+    BanglaParagraph,
+    bangla_style,
+)
+
+# Register fonts for English, Bengali and Hindi PDF text.
+
+FONT_DIR = Path(__file__).resolve().parent.parent / "static" / "fonts"
+# Register combined English and Bengali font.
+
+register_fonts(
+    latin_regular=str(FONT_DIR / "NotoSans-Regular.ttf"),
+    latin_bold=str(FONT_DIR / "NotoSans-Bold.ttf"),
+    bangla_regular=str(FONT_DIR / "NotoSansBengali-Regular.ttf"),
+    bangla_bold=str(FONT_DIR / "NotoSansBengali-Bold.ttf"),
+)
+
+pdfmetrics.registerFont(
+    TTFont(
+        "NotoSans",
+        str(FONT_DIR / "NotoSans-Regular.ttf"),
+        shapable=True,
+    )
+)
+
+pdfmetrics.registerFont(
+    TTFont(
+        "NotoSansBengali",
+        str(FONT_DIR / "NotoSansBengali-Regular.ttf"),
+        shapable=True,
+    )
+)
+
+pdfmetrics.registerFont(
+    TTFont(
+        "NotoSansDevanagari",
+        str(FONT_DIR / "NotoSansDevanagari-Regular.ttf"),
+        shapable=True,
+    )
+)
 
 
 def get_issued_books_report():
@@ -230,6 +288,250 @@ def generate_report_excel(report_data):
     output = BytesIO()
 
     workbook.save(output)
+
+    output.seek(0)
+
+    return output
+
+
+def get_multilingual_font(value):
+    """Identify the script used in the text."""
+
+    text = str(value)
+
+    if any(0x0980 <= ord(char) <= 0x09FF for char in text):
+        return "Bangla"
+
+    if any(0x0900 <= ord(char) <= 0x097F for char in text):
+        return "NotoSansDevanagari"
+
+    return "NotoSans"
+
+
+def generate_report_pdf(report_data, report_type, start_date, end_date):
+    """Generate a full-width, formatted PDF library report."""
+
+    output = BytesIO()
+
+    document = SimpleDocTemplate(
+        output,
+        pagesize=landscape(A4),
+        rightMargin=15 * mm,
+        leftMargin=15 * mm,
+        topMargin=15 * mm,
+        bottomMargin=15 * mm,
+    )
+
+    styles = getSampleStyleSheet()
+
+    elements = []
+
+    # Report title.
+    title = report_type.replace("_", " ").title() + " Report"
+
+    title_style = ParagraphStyle(
+        "ReportTitle",
+        parent=styles["Title"],
+        fontName="NotoSans",
+    )
+
+    elements.append(Paragraph(title, title_style))
+
+    elements.append(Spacer(1, 5 * mm))
+
+    # Report period.
+    date_range = (
+        f"Period: {start_date.strftime('%d-%m-%Y')} "
+        f"to {end_date.strftime('%d-%m-%Y')}"
+    )
+
+    elements.append(Paragraph(date_range, styles["Normal"]))
+
+    elements.append(Spacer(1, 8 * mm))
+
+    # Table text styles.
+    header_style = ParagraphStyle(
+        "ReportHeader",
+        fontName="NotoSans",
+        fontSize=7,
+        leading=9,
+        textColor=colors.white,
+        alignment=1,
+        wordWrap="CJK",
+    )
+
+    body_style = ParagraphStyle(
+        "ReportBody",
+        fontName="NotoSans",
+        fontSize=7,
+        leading=9,
+        alignment=1,
+        wordWrap="CJK",
+    )
+
+    left_style = ParagraphStyle(
+        "ReportBodyLeft",
+        parent=body_style,
+        alignment=0,
+    )
+
+    # Table headings.
+    headers = [
+        "Transaction No.",
+        "Accession No.",
+        "Book Name",
+        "Member No.",
+        "Member Name",
+        "Issue Date",
+        "Due Date",
+        "Return Date",
+    ]
+
+    table_data = [[Paragraph(header, header_style) for header in headers]]
+
+    # Add report records.
+    if report_data:
+
+        for transaction in report_data:
+
+            row = [
+                transaction.transaction_no,
+                transaction.book.accession_no,
+                transaction.book.book_name,
+                transaction.member.member_no,
+                transaction.member.name,
+                transaction.issue_date.strftime("%d-%m-%Y"),
+                transaction.due_date.strftime("%d-%m-%Y"),
+                (
+                    transaction.return_date.strftime("%d-%m-%Y")
+                    if transaction.return_date
+                    else "-"
+                ),
+            ]
+
+            formatted_row = []
+
+            for index, value in enumerate(row):
+
+                cell_style = left_style if index in (2, 4) else body_style
+
+                cell_font = get_multilingual_font(value)
+
+                cell_style = ParagraphStyle(
+                    f"ReportCell{index}",
+                    parent=cell_style,
+                    fontName=cell_font,
+                    shaping=1,
+                )
+
+                cell_text = str(value)
+
+                if cell_font == "Bangla":
+                    cell_paragraph = BanglaParagraph(
+                        cell_text,
+                        bangla_style(
+                            fontSize=cell_style.fontSize,
+                            leading=cell_style.leading,
+                            textColor=cell_style.textColor,
+                            alignment=cell_style.alignment,
+                        ),
+                    )
+                else:
+                    cell_paragraph = Paragraph(
+                        escape(cell_text),
+                        cell_style,
+                    )
+
+                formatted_row.append(cell_paragraph)
+
+            table_data.append(formatted_row)
+
+    else:
+
+        table_data.append(
+            [
+                Paragraph(
+                    "No data available for the selected report and date range.",
+                    body_style,
+                )
+            ]
+            + [""] * 7
+        )
+
+    # Calculate available page width.
+    available_width = landscape(A4)[0] - document.leftMargin - document.rightMargin
+
+    # Allocate the entire printable width.
+    column_ratios = [
+        0.11,  # Transaction No.
+        0.10,  # Accession No.
+        0.21,  # Book Name
+        0.10,  # Member No.
+        0.16,  # Member Name
+        0.10,  # Issue Date
+        0.10,  # Due Date
+        0.12,  # Return Date
+    ]
+
+    column_widths = [available_width * ratio for ratio in column_ratios]
+
+    # Create full-width table.
+    report_table = Table(
+        table_data,
+        colWidths=column_widths,
+        repeatRows=1,
+        hAlign="LEFT",
+    )
+
+    report_table.setStyle(
+        TableStyle(
+            [
+                ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#1F4E78")),
+                ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
+                ("GRID", (0, 0), (-1, -1), 0.5, colors.grey),
+                ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+                ("LEFTPADDING", (0, 0), (-1, -1), 5),
+                ("RIGHTPADDING", (0, 0), (-1, -1), 5),
+                ("TOPPADDING", (0, 0), (-1, -1), 6),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 6),
+                (
+                    "ROWBACKGROUNDS",
+                    (0, 1),
+                    (-1, -1),
+                    [colors.white, colors.HexColor("#EAF0F6")],
+                ),
+                (
+                    ("SPAN", (0, 1), (-1, 1))
+                    if not report_data
+                    else ("ALIGN", (0, 0), (-1, -1), "CENTER")
+                ),
+            ]
+        )
+    )
+
+    elements.append(report_table)
+
+    # Page numbering.
+    def add_page_number(canvas, document):
+
+        canvas.saveState()
+
+        canvas.setFont("NotoSans", 8)
+
+        canvas.drawRightString(
+            landscape(A4)[0] - 15 * mm,
+            8 * mm,
+            f"Page {document.page}",
+        )
+
+        canvas.restoreState()
+
+    # Generate PDF.
+    document.build(
+        elements,
+        onFirstPage=add_page_number,
+        onLaterPages=add_page_number,
+    )
 
     output.seek(0)
 

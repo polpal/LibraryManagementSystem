@@ -21,6 +21,7 @@ from app.services.report_service import (
     get_overdue_books_report,
     get_report_summary,
     get_filtered_report,
+    generate_report_pdf,
 )
 
 report_bp = Blueprint("report", __name__, url_prefix="/reports")
@@ -189,4 +190,59 @@ def export_report_excel():
         mimetype=(
             "application/vnd.openxmlformats-officedocument." "spreadsheetml.sheet"
         ),
+    )
+
+
+@report_bp.route("/export/pdf")
+@login_required
+@role_required("Admin", "Librarian")
+def export_report_pdf():
+
+    today = date.today()
+
+    default_start_date = today.replace(day=1)
+
+    report_type = request.args.get("report_type", "issued")
+    start_date_value = request.args.get("start_date")
+    end_date_value = request.args.get("end_date")
+
+    try:
+
+        start_date = (
+            date.fromisoformat(start_date_value)
+            if start_date_value
+            else default_start_date
+        )
+
+        end_date = date.fromisoformat(end_date_value) if end_date_value else today
+
+        if start_date > end_date:
+            raise ValueError("Start date cannot be later than end date.")
+
+        report_data = get_filtered_report(
+            report_type,
+            start_date,
+            end_date,
+        )
+
+    except ValueError as error:
+
+        flash(str(error), "danger")
+
+        return redirect(url_for("report.reports"))
+
+    pdf_file = generate_report_pdf(
+        report_data,
+        report_type,
+        start_date,
+        end_date,
+    )
+
+    filename = f"{report_type}_report_{today.isoformat()}.pdf"
+
+    return send_file(
+        pdf_file,
+        as_attachment=True,
+        download_name=filename,
+        mimetype="application/pdf",
     )
